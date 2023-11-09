@@ -14,7 +14,7 @@ In addition to its strong security features, TrustedFlow offers a diverse array 
 
 TrustedFlow is especially valuable in scenarios that involve secure storage, processing, or sharing of sensitive data, as it effectively mitigates the risks associated with data exposure and unauthorized usage. Its comprehensive security measures and powerful data processing capabilities make it a reliable solution for organizations seeking to protect their data and make the most of its potential.
 
-![trustedflow](./docs/images/trustedflow.png)
+![trustedflow](./docs/images/trustedflow_en.png)
 
 ## Documentation
 
