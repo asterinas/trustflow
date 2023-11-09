@@ -3,14 +3,14 @@
 TrustedFlow
 =============
 
-可信执行环境(Trusted Execution Environment，TEE) 是一种基于硬件的隐私保护技术。
-它保证了执行代码的真实性，运行时状态(如寄存器、内存和敏感I/O)的完整性，
-以及存储在内存中的代码、数据和运行时状态的机密性。此外，还应能够向第三方提供远程认证，以证明其可靠性。
-
-`TrustedFlow <https://github.com/secretflow/trustedflow>`_ 是隐语基于可信执行环境的零信任（zero-trust）可信计算系统。
+`TrustedFlow <https://github.com/secretflow/trustedflow>`_ 是隐语基于可信硬件的隐私保护引擎。
 TrustedFlow立足于可信执行环境技术，提供受保护和隔离的环境，其中封装了敏感数据，并且提供数据安全存储和计算能力。
 
-TrustedFlow可以保护数据的机密性、完整性和可用性。在TrustedFlow中，数据被加密并存储在受控和限制的环境，以防止未经授权访问。
+
+可信执行环境(Trusted Execution Environment，TEE) 是一种基于硬件的隐私保护技术。它保证了执行代码的真实性，运行时状态(如寄存器、内存和敏感I/O)的完整性，
+以及存储在内存中的代码、数据和运行时状态的机密性。此外，还能够向第三方提供远程认证，以证明其可靠性。基于TEE，TrustedFlow可以保护数据的机密性、完整性和可用性。
+
+在TrustedFlow中，数据被加密并存储在受控和限制的环境，以防止未经授权访问。
 TrustedFlow采用多种安全措施，如远程认证、计算隔离、授权管控和审计机制，以确保数据被正确保护。
 TrustedFlow具有端到端全链路加密能力，提供了零信任安全特性，机构可以对TrustedFlow进行验证，限制数据使用最小权限访问。
 与此同时，TrustedFlow提供了丰富的数据加工处理能力，包括数据预处理、经典机器学习、深度学习、大模型、数据分析等，
@@ -27,7 +27,7 @@ TrustedFlow允许机构在保护数据安全的前提下，探索强大的人工
 TrustedFlow保护了数据使用中（data-in-use）、数据存储（data-at-rest）、数据传输（data-in-transit）的安全。
 使用TrustedFlow，你可以获得丰富的可信应用。
 
-- **可信经典机器学习**：基于TrustedFlow的经典机器学习能力，用户可以以安全可信的方式运行诸如逻辑回归、树模型等机器学习。
+- **可信传统机器学习**：基于TrustedFlow的传统机器学习能力，用户可以以安全可信的方式运行诸如逻辑回归、树模型等机器学习。
 
 - **可信深度学习**：基于TrustedFlow的深度学习能力，用户可以以安全可信的方式运行常用的深度学习框架（比如PyTorch、TensorFlow）。
 

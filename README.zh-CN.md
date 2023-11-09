@@ -18,7 +18,7 @@ TrustedFlow可用于需要安全存储、处理或共享敏感数据的场景，
 
 ## 文档
 
-- [TrustedFlow](https://www.secretflow.org.cn/docs/trustedflow/zh_CN/)
+- [TrustedFlow](https://www.secretflow.org.cn/docs/trustedflow)
 
 ## 关联的代码仓库
 

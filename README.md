@@ -18,7 +18,7 @@ TrustedFlow is especially valuable in scenarios that involve secure storage, pro
 
 ## Documentation
 
-- [TrustedFlow](https://www.secretflow.org.cn/docs/trustedflow/zh_CN/)
+- [TrustedFlow](https://www.secretflow.org.cn/docs/trustedflow)
 
 ## TrustedFlow Related Projects
 
