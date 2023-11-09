@@ -1,0 +1,6 @@
+**/__pycache__
+**/*.whl
+build
+dist
+*.egg-info
+componentize/dmserver

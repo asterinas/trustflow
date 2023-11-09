@@ -1,0 +1,20 @@
+- name: sf-tee-dm-sim
+  replicas: 1
+  spec:
+    containers:
+      - command:
+          - sh
+        args:
+          - -c
+          - "python -m componentize.main --task_config_path /etc/kuscia/task-config.conf"
+        configVolumeMounts:
+          - mountPath: /etc/kuscia/task-config.conf
+            subPath: task-config.conf
+        name: sf-tee-dm-sim
+        ports:
+          - name: tee-dm
+            port: 36954
+            protocol: HTTP
+            scope: Cluster
+        workingDir: /work
+    restartPolicy: Never
