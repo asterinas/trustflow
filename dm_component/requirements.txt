@@ -1,0 +1,13 @@
+numpy==1.23.5  # FEATURE=[lite]
+kuscia==0.0.1b2  # FEATURE=[lite]
+protobuf==3.19.6  # FEATURE=[lite]
+clean-text==0.6.0
+grpcio==1.56.2  # FEATURE=[lite]
+requests==2.31.0
+tenacity==8.2.3
+secretflow-spec==0.1.0.dev20231101
+capsule_manager_sdk==0.1.0b0
+sdc-apis==0.2.0.dev20230930
+requests_toolbelt==1.0.0
+cryptography==41.0.2
+certifi==2023.7.22

@@ -1,0 +1,36 @@
+apiVersion: kuscia.secretflow/v1alpha1
+kind: AppImage
+metadata:
+  name: tee-dm-image
+spec:
+  configTemplates:
+    task-config.conf: |
+      {
+        "task_id": "{{.TASK_ID}}",
+        "task_input_config": "{{.TASK_INPUT_CONFIG}}",
+        "task_cluster_def": "{{.TASK_CLUSTER_DEFINE}}",
+        "allocated_ports": "{{.ALLOCATED_PORTS}}"
+      }
+  deployTemplates:
+    - name: tee-dm
+      replicas: 1
+      spec:
+        containers:
+          - command:
+              - sh
+              - -c
+              - "python -m componentize.main --task_config_path /etc/kuscia/task-config.conf"
+            configVolumeMounts:
+              - mountPath: /etc/kuscia/task-config.conf
+                subPath: task-config.conf
+            name: tee-dm
+            ports:
+              - name: tee-dm
+                port: 36954
+                protocol: HTTP
+                scope: Cluster
+            workingDir: /work
+        restartPolicy: Never
+  image:
+    name: secretflow/sf-tee-dm-sim
+    tag: "0.1.0b0"
