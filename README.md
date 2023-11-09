@@ -1,3 +1,7 @@
+<p align="center">
+<a href="./README.zh-CN.md">简体中文</a>｜<a href="./README.md">English</a>
+</p>
+
 ## What's TrustedFlow
 
 **TrustedFlow** is a zero-trust computing system based on TEE(Trusted Execution Environments). TrustedFlow derives its name from the fusion of **Trusted** Execution environments and **Secret**Flow. 

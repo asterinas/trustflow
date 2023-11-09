@@ -1,3 +1,7 @@
+<p align="center">
+<a href="./README.zh-CN.md">简体中文</a>｜<a href="./README.md">English</a>
+</p>
+
 ## TrustedFlow
 
 可信执行环境(Trusted Execution Environment，TEE) 是一种基于硬件的隐私保护技术。它保证了执行代码的真实性，运行时状态(如寄存器、内存和敏感I/O)的完整性，以及存储在内存中的代码、数据和运行时状态的机密性。此外，还应能够向第三方提供远程认证，以证明其可靠性。
