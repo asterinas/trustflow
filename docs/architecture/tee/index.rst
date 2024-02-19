@@ -1,5 +1,3 @@
-.. _quick_start:
-
 可信执行环境简介
 ========================
 可信执行环境（Trusted Execution Environments, TEE）是是一种基于硬件的隐私保护技术。
