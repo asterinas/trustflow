@@ -37,27 +37,27 @@ TrustedFlow保护了数据使用中（data-in-use）、数据存储（data-at-re
 
 入门
 -----
-从零开始，体验如何使用TrustedFlow进行联合建模，欢迎阅读 `快速上手 <quick_start/index.rst>`_ 。
+从零开始，体验如何使用TrustedFlow进行联合建模，欢迎阅读 `快速上手 <quick_start/index>`_ 。
 
 架构和设计
 -----------
-了解TrustedFlow架构、原理和更多功能，欢迎阅读 `架构设计 <architecture/index.rst>`_ 。
+了解TrustedFlow架构、原理和更多功能，欢迎阅读 `架构设计 <architecture/index>`_ 。
 
-1. `TrustedFlow核心原理 <architecture/principle.md>`_
-2. `授权策略 <architecture/policy.md>`_
-3. `可信应用 <architecture/apps/index.rst>`_
+1. `TrustedFlow核心原理 <architecture/principle>`_
+2. `授权策略 <architecture/policy>`_
+3. `可信应用 <architecture/apps/index>`_
 
 
 高阶话题
 -----------
-关于TrustedFlow的更多话题，欢迎阅读 `高阶话题 <advanced_topic/index.html>`_ 。
+关于TrustedFlow的更多话题，欢迎阅读 `高阶话题 <advanced_topic/index>`_ 。
 
-1. `基于TrustedFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee.md>`_ 
+1. `基于TrustedFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee>`_ 
 
 
 路线图
 -----------
-TrustedFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/roadmap.md>`_。
+TrustedFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/roadmap>`_。
 
 获得帮助
 ------------
