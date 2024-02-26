@@ -27,7 +27,7 @@ body:
     validations:
       required: true
   - type: input
-    id: sfversion
+    id: cm_version
     attributes:
       label: Capsule Manager Version
       description: 
@@ -35,7 +35,7 @@ body:
     validations:
       required: true
   - type: input
-    id: sfversion
+    id: cm_sdk_version
     attributes:
       label: Capsule Manager SDK Version
       description: 
@@ -43,7 +43,7 @@ body:
     validations:
       required: true
   - type: input
-    id: sfversion
+    id: tee_apps_version
     attributes:
       label: Tee Apps Version
       description: 
