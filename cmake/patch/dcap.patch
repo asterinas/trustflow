@@ -1,0 +1,408 @@
+diff --git a/QuoteGeneration/buildenv.mk b/QuoteGeneration/buildenv.mk
+index 5fed485..7cb2eb8 100644
+--- a/QuoteGeneration/buildenv.mk
++++ b/QuoteGeneration/buildenv.mk
+@@ -106,11 +106,15 @@ ifeq ($(CC_NO_LESS_THAN_8), 1)
+ endif
+
+ # turn on stack protector for SDK
+-CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
+-ifeq ($(CC_BELOW_4_9), 1)
+-    COMMON_FLAGS += -fstack-protector
++ifndef WASM
++ CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
++ ifeq ($(CC_BELOW_4_9), 1)
++     COMMON_FLAGS += -fstack-protector
++ else
++     COMMON_FLAGS += -fstack-protector-strong
++ endif
+ else
+-    COMMON_FLAGS += -fstack-protector-strong
++    COMMON_FLAGS += -fno-stack-protector
+ endif
+
+ ifdef DEBUG
+@@ -202,6 +206,13 @@ COMMON_LDFLAGS := -Wl,-z,relro,-z,now,-z,noexecstack
+
+ # Enable build static library
+ GEN_STATIC ?= 0
++GEN_DYNAMIC ?= 1
++ifeq ($(GEN_DYNAMIC),0)
++    ifeq ($(GEN_STATIC),0)
++        $(info Choose at least one library to build)
++        $(error Aborting)
++    endif
++endif
+
+ # Compiler and linker options for an Enclave
+ #
+diff --git a/QuoteGeneration/common/src/se_thread.c b/QuoteGeneration/common/src/se_thread.c
+index caba85b..9bfebb3 100644
+--- a/QuoteGeneration/common/src/se_thread.c
++++ b/QuoteGeneration/common/src/se_thread.c
+@@ -59,6 +59,19 @@ int	se_tls_set_value(se_tls_index_t tls_index, void *tls_value) { return TlsSetV
+
+ void se_mutex_init(se_mutex_t* mutex)
+ {
++#ifdef __EMSCRIPTEN__
++    pthread_mutexattr_t attr;
++    int r;
++
++    pthread_mutexattr_init(&attr);
++
++    r = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
++
++    if (r == 0)
++        r = pthread_mutex_init(mutex, &attr);
++
++    pthread_mutexattr_destroy(&attr);
++#else
+ #ifdef PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
+     se_mutex_t tmp = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+ #elif defined(PTHREAD_RECURSIVE_MUTEX_INITIALIZER)
+@@ -68,7 +81,8 @@ void se_mutex_init(se_mutex_t* mutex)
+ #endif
+
+     /* C doesn't allow `*mutex = PTHREAD_..._INITIALIZER'.*/
+-    memcpy_s(mutex, sizeof(tmp), &tmp, sizeof(tmp));
++    memcpy(mutex, &tmp, sizeof(tmp));
++#endif
+ }
+
+ int se_mutex_lock(se_mutex_t* mutex) { return (0 == pthread_mutex_lock(mutex)); }
+@@ -86,7 +100,11 @@ int se_thread_cond_signal(se_cond_t *cond){return (0 == pthread_cond_signal(cond
+ int se_thread_cond_broadcast(se_cond_t *cond){return (0 == pthread_cond_broadcast(cond));}
+ int se_thread_cond_destroy(se_cond_t* cond){return (0 == pthread_cond_destroy(cond));}
+
+-unsigned int se_get_threadid(void) { return (unsigned)syscall(__NR_gettid);}
++#ifndef __EMSCRIPTEN__
++ unsigned int se_get_threadid(void) { return (unsigned)syscall(__NR_gettid);}
++#else
++unsigned int se_get_threadid(void) { return (unsigned)gettid();}
++#endif
+ /* tls functions */
+ int se_tls_alloc(se_tls_index_t *tls_index) { return !pthread_key_create(tls_index, NULL); }
+ int se_tls_free(se_tls_index_t tls_index) { return !pthread_key_delete(tls_index); }
+diff --git a/QuoteGeneration/qcnl/linux/Makefile b/QuoteGeneration/qcnl/linux/Makefile
+index 05dc6de..fdecdfe 100644
+--- a/QuoteGeneration/qcnl/linux/Makefile
++++ b/QuoteGeneration/qcnl/linux/Makefile
+@@ -82,12 +82,15 @@ PCK_Selection_Lib_Static := PCKCertSelection
+
+ all: install_lib
+
+-install_lib: $(CNL_Lib_Name_Dynamic) | $(BUILD_DIR)
+-	@$(CP) $(CNL_Lib_Name_Dynamic) $|
++install_lib: $(BUILD_DIR)
++ifeq ($(GEN_DYNAMIC),1)
++	@$(MAKE) $(CNL_Lib_Name_Dynamic)
++	@$(CP) $(CNL_Lib_Name_Dynamic) $(BUILD_DIR)
++endif
+
+ ifeq ($(GEN_STATIC),1)
+	@$(MAKE) $(CNL_Lib_Name_Static)
+-	@$(CP) $(CNL_Lib_Name_Static) $|
++	@$(CP) $(CNL_Lib_Name_Static) $(BUILD_DIR)
+ endif
+
+ run: all
+diff --git a/QuoteGeneration/qcnl/linux/network_wrapper.cpp b/QuoteGeneration/qcnl/linux/network_wrapper.cpp
+index 6545700..c042cc7 100644
+--- a/QuoteGeneration/qcnl/linux/network_wrapper.cpp
++++ b/QuoteGeneration/qcnl/linux/network_wrapper.cpp
+@@ -40,10 +40,17 @@
+ #include "se_memcpy.h"
+ #include "se_thread.h"
+ #include "sgx_default_qcnl_wrapper.h"
+-#include <curl/curl.h>
++#ifndef __EMSCRIPTEN__
++ #include <curl/curl.h>
++#else
++#include <emscripten.h>
++#include "writer.h"
++#include "stringbuffer.h"
++#endif
+ #include <dlfcn.h>
+ #include <unistd.h>
+
++#ifndef __EMSCRIPTEN__
+ typedef struct _network_malloc_info_t {
+     char *base;
+     uint32_t size;
+@@ -220,6 +227,7 @@ static sgx_qcnl_error_t curl_error_to_qcnl_error(CURLcode curl_error) {
+     }
+ }
+
++
+ template <typename T>
+ static CURLcode curl_set_opt_with_log(CURL *handle, CURLoption option, T param) {
+     CURLcode result = f_easy_setopt(handle, option, param);
+@@ -229,6 +237,7 @@ static CURLcode curl_set_opt_with_log(CURL *handle, CURLoption option, T param)
+     }
+     return result;
+ }
++#endif
+
+ /**
+  * This method converts PCCS HTTP status codes to QCNL error codes
+@@ -256,6 +265,7 @@ static sgx_qcnl_error_t pccs_status_to_qcnl_error(long pccs_status_code) {
+     }
+ }
+
++
+ /**
+  * This method calls curl library to perform https POST request with raw body in JSON format and returns response body and header
+  *
+@@ -271,6 +281,7 @@ static sgx_qcnl_error_t pccs_status_to_qcnl_error(long pccs_status_code) {
+  *
+  * @return SGX_QCNL_SUCCESS Call https post successfully. Other return codes indicate an error occured.
+  */
++#ifndef __EMSCRIPTEN__
+ sgx_qcnl_error_t qcnl_https_request(const char *url,
+                                     http_header_map &header_map,
+                                     const char *req_body,
+@@ -427,3 +438,128 @@ cleanup:
+
+     return ret;
+ }
++#else
++EM_JS(char *, dcap_fetch_proxy, (const char *cUrl, const char *cOptions), {
++	return Asyncify.handleSleep(function(wakeUp) {
++		const url = AsciiToString(cUrl);
++		const options = JSON.parse(AsciiToString(cOptions));
++		let headerStr = "";
++		let retJson = {
++			headers : "",
++			body : "",
++			status:-1
++		};
++		fetch(new Request(url), options)
++			.then(async(response) => {
++				retJson.status = response.status;
++				if(response.status === 200)
++				{
++					for (let[key, value] of response.headers)
++					{
++						const tmp = key + ": " + value + "\n";
++						headerStr += tmp;
++					}
++					retJson.headers = headerStr;
++					const text = await response.text();
++					retJson.body = String(text);
++				};
++				const jsonStr = JSON.stringify(retJson);
++				const lengthBytes = lengthBytesUTF8(jsonStr) + 1;
++				const result = _malloc(lengthBytes);
++				stringToUTF8(jsonStr, result, lengthBytes);
++				setTimeout(wakeUp(result), 0);
++			})
++			.catch(error => {
++				const jsonStr = JSON.stringify(retJson);
++				var lengthBytes = lengthBytesUTF8(jsonStr) + 1;
++				var result = _malloc(lengthBytes);
++				stringToUTF8(jsonStr, result, lengthBytes);
++				setTimeout(wakeUp(result), 0);
++			});
++	});
++});
++
++sgx_qcnl_error_t qcnl_https_request(const char *url,
++                                    http_header_map &header_map,
++                                    const char *req_body,
++                                    uint32_t req_body_size,
++                                    const uint8_t *user_token,
++                                    uint16_t user_token_size,
++                                    char **resp_msg,
++                                    uint32_t &resp_size,
++                                    char **resp_header,
++                                    uint32_t &header_size)
++{
++	sgx_qcnl_error_t ret = SGX_QCNL_NETWORK_ERROR;
++    Document optJson;
++    optJson.SetObject();
++    Document::AllocatorType& allocator = optJson.GetAllocator();
++    Value user_token_str(kStringType);
++    Value req_body_str(kStringType);
++    Value headers(kObjectType);
++
++	if (user_token && user_token_size > 0)
++	{
++        headers.AddMember("Content-Type", "application/json",allocator);
++        user_token_str.SetString(reinterpret_cast<const char *>(user_token), user_token_size);
++        headers.AddMember("user-token", user_token_str,allocator);
++	}
++    http_header_map::iterator it = header_map.begin();
++    while (it != header_map.end()) {
++        headers.AddMember(StringRef(it->first.c_str(),it->first.length()), StringRef(it->second.c_str(),it->second.length()),allocator);
++        it++;
++    }
++	if (req_body && req_body_size > 0)
++	{
++        optJson.AddMember("method","POST",allocator);
++        req_body_str.SetString(req_body, req_body_size);
++        optJson.AddMember("body",req_body_str,allocator);
++        optJson.AddMember("Content-Length",req_body_size,allocator);
++	}
++	else
++        optJson.AddMember("method", "GET", allocator);
++    optJson.AddMember("cache", "default", allocator);
++    optJson.AddMember("headers", headers, allocator);
++
++    StringBuffer strBuffer;
++    Writer<StringBuffer> writer(strBuffer);
++    optJson.Accept(writer);
++    std::string options = strBuffer.GetString();
++	char *cstr = dcap_fetch_proxy(url, options.c_str());
++    std::string str(cstr);
++    free(cstr);
++    Document retJson;
++    retJson.Parse(str.c_str());
++
++    if (retJson.HasParseError() || !retJson.IsObject())
++        return ret;
++    if (!retJson.HasMember("status") || !retJson["status"].IsInt())
++        return ret;
++
++    int status = retJson["status"].GetInt();
++    if (status == 200)
++    {
++        if (!retJson.HasMember("headers") || !retJson["headers"].IsString() ||
++            !retJson.HasMember("body") || !retJson["body"].IsString())
++            return ret;
++        std::string retHeader = retJson["headers"].GetString();
++        std::string retBody = retJson["body"].GetString();
++        uint32_t headersLen = retHeader.length();
++        uint32_t bodyLen = retBody.length();
++        *resp_header = (char *)malloc(headersLen);
++        memset(*resp_header, 0, headersLen);
++        *resp_msg = (char *)malloc(bodyLen);
++        memset(*resp_msg, 0, bodyLen);
++        memcpy(*resp_header, retHeader.c_str(), headersLen);
++        header_size = headersLen;
++        memcpy(*resp_msg, retBody.c_str(),bodyLen);
++        resp_size = bodyLen;
++        ret = SGX_QCNL_SUCCESS;
++    }
++    else if (status == -1)
++            ret = SGX_QCNL_NETWORK_ERROR;
++    else
++        ret = pccs_status_to_qcnl_error(status);
++    return ret;
++}
++#endif
+diff --git a/QuoteGeneration/qcnl/linux/qcnl_config_impl.cpp b/QuoteGeneration/qcnl/linux/qcnl_config_impl.cpp
+index b1717e7..ba29bee 100644
+--- a/QuoteGeneration/qcnl/linux/qcnl_config_impl.cpp
++++ b/QuoteGeneration/qcnl/linux/qcnl_config_impl.cpp
+@@ -38,7 +38,9 @@
+ #include "istreamwrapper.h"
+ #include "qcnl_config.h"
+ #include <algorithm>
++#ifndef __EMSCRIPTEN__
+ #include <curl/curl.h>
++#endif
+ #include <fstream>
+
+ sgx_qcnl_error_t QcnlConfigLegacy::load_config() {
+diff --git a/QuoteGeneration/qpl/linux/Makefile b/QuoteGeneration/qpl/linux/Makefile
+index f0bee84..adfce35 100644
+--- a/QuoteGeneration/qpl/linux/Makefile
++++ b/QuoteGeneration/qpl/linux/Makefile
+@@ -74,12 +74,15 @@ QPL_SO_VERSION:= $(shell echo $(QPL_VERSION) |awk -F. '{print $$1}')
+
+ all: install_lib
+
+-install_lib: $(QPL_Lib_Name_Dynamic) | $(BUILD_DIR)
+-	@$(CP) $(QPL_Lib_Name_Dynamic) $|
++install_lib: $(BUILD_DIR)
++ifeq ($(GEN_DYNAMIC),1)
++	@$(MAKE) $(QPL_Lib_Name_Dynamic)
++	@$(CP) $(QPL_Lib_Name_Dynamic) $(BUILD_DIR)
++endif
+
+ ifeq ($(GEN_STATIC),1)
+	@$(MAKE) $(QPL_Lib_Name_Static)
+-	@$(CP) $(QPL_Lib_Name_Static) $|
++	@$(CP) $(QPL_Lib_Name_Static) $(BUILD_DIR)
+ endif
+
+ run: all
+diff --git a/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp b/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp
+index b963c0b..3ffeaec 100644
+--- a/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp
++++ b/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp
+@@ -42,7 +42,7 @@
+ #define FALSE	0
+ #define TRUE	1
+
+-#ifdef _MSC_VER
++#if defined(_MSC_VER) || defined(__EMSCRIPTEN__)
+ #include <stdint.h>
+ typedef int32_t	    int_fast32_t;
+ typedef int64_t     int_fast64_t;
+
+diff --git a/QuoteVerification/QvE/Enclave/qve.cpp b/QuoteVerification/QvE/Enclave/qve.cpp
+index a5972ce..bb0b69b 100644
+--- a/QuoteVerification/QvE/Enclave/qve.cpp
++++ b/QuoteVerification/QvE/Enclave/qve.cpp
+@@ -60,7 +60,7 @@
+
+ #ifdef _TD_MIGRATION
+ #define SGX_TRUSTED
+-#include "migtd_utils.h"
++//#include "migtd_utils.h"
+ #include "migth_qve_utils.h"
+ #include "tdx_verify.h"
+ #define EXPORT_API __attribute__ ((visibility("default")))
+diff --git a/QuoteVerification/buildenv.mk b/QuoteVerification/buildenv.mk
+index 19e05e4..fe08942 100644
+--- a/QuoteVerification/buildenv.mk
++++ b/QuoteVerification/buildenv.mk
+@@ -57,8 +57,15 @@ QVL_SRC_PATH 			?= $(DCAP_QV_DIR)/QVL/Src
+ SGXSSL_PACKAGE_PATH 	?= $(DCAP_QV_DIR)/sgxssl/Linux/package
+ PREBUILD_OPENSSL_PATH	?= $(DCAP_QV_DIR)/../prebuilt/openssl
+
+-SGX_COMMON_CFLAGS := $(COMMON_FLAGS) -m64 -Wjump-misses-init -Wstrict-prototypes -Wunsuffixed-float-constants
+-SGX_COMMON_CXXFLAGS := $(COMMON_FLAGS) -m64 -Wnon-virtual-dtor -std=c++14
++SGX_COMMON_CFLAGS := $(COMMON_FLAGS)  -Wjump-misses-init -Wstrict-prototypes -Wunsuffixed-float-constants
++SGX_COMMON_CXXFLAGS := $(COMMON_FLAGS) -Wnon-virtual-dtor -std=c++14
++ifdef WASM
++SGX_COMMON_CFLAGS += -m32
++SGX_COMMON_CXXFLAGS += -m32
++else
++SGX_COMMON_CFLAGS += -m64
++SGX_COMMON_CXXFLAGS += -m64
++endif
+
+
+ QVL_LIB_PATH := $(QVL_SRC_PATH)/AttestationLibrary
+diff --git a/QuoteVerification/dcap_quoteverify/linux/Makefile b/QuoteVerification/dcap_quoteverify/linux/Makefile
+index 5e9327c..6c27a0b 100644
+--- a/QuoteVerification/dcap_quoteverify/linux/Makefile
++++ b/QuoteVerification/dcap_quoteverify/linux/Makefile
+@@ -35,7 +35,7 @@ include ../../buildenv.mk
+ INSTALL_PATH 		?= /usr/lib/x86_64-linux-gnu
+ QVE_SRC_PATH		:= $(DCAP_QV_DIR)/QvE
+
+-QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include
++QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include  -I$(DCAP_QG_DIR)/qpl/inc
+ QVL_PARSER_INC  += -I$(PREBUILD_OPENSSL_PATH)/inc
+ QVL_VERIFY_INC	:= -I$(QVE_SRC_PATH)/Include \
+				   -I../inc \
+@@ -86,13 +86,15 @@ all: install_lib
+ $(BUILD_DIR):
+	@$(MKDIR) $@
+
+-install_lib: $(QVL_VERIFY_LIB_NAME_Dynamic) | $(BUILD_DIR)
+-	@$(CP) $(QVL_VERIFY_LIB_NAME_Dynamic) $|
++install_lib: $(BUILD_DIR)
++ifeq ($(GEN_DYNAMIC),1)
++	@$(CP) $(QVL_VERIFY_LIB_NAME_Dynamic) $(BUILD_DIR)
+	ln -sf $|/$(QVL_VERIFY_LIB_NAME_Dynamic) $|/$(QVL_VERIFY_LIB_NAME_Dynamic).1
++endif
+
+ ifeq ($(GEN_STATIC),1)
+	@$(MAKE) $(QVL_VERIFY_LIB_NAME_Static)
+-	@$(CP) $(QVL_VERIFY_LIB_NAME_Static) $|
++	@$(CP) $(QVL_VERIFY_LIB_NAME_Static) $(BUILD_DIR)
+ endif

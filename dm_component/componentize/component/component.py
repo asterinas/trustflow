@@ -21,8 +21,7 @@ from typing import Dict, List, Union
 
 import cleantext
 from componentize.component.data_utils import DistDataType, check_io_def
-from secretflow.spec.v1.component_pb2 import (AttributeDef, AttrType,
-                                              ComponentDef, IoDef)
+from secretflow.spec.v1.component_pb2 import AttributeDef, AttrType, ComponentDef, IoDef
 from secretflow.spec.v1.evaluation_pb2 import NodeEvalParam, NodeEvalResult
 
 

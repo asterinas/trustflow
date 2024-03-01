@@ -14,8 +14,13 @@
 
 import math
 
-from secretflow.spec.v1.component_pb2 import (Attribute, AttributeDef,
-                                              AttrType, ComponentDef, IoDef)
+from secretflow.spec.v1.component_pb2 import (
+    Attribute,
+    AttributeDef,
+    AttrType,
+    ComponentDef,
+    IoDef,
+)
 from secretflow.spec.v1.evaluation_pb2 import NodeEvalParam
 
 

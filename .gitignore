@@ -1,2 +1,53 @@
+# devtools
+.idea/
+*.plist
+clion/
+*.swp
+tags
+sftp-config.json
+build_cmakelist.py
+.akconfig
+.cloudide/
+*.code-workspace
+vipclient-*
+*.pb.h
+*.pb.cc
+compile_commands.json
+.clangd
+Pipfile
+.vscode
+
+# python-package
+/dist
+*.egg-info
+__pycache__
+build
+_build
+
+# bazel
+bazel-*
+
+# cmake related
+abseil-cpp
+bld
+bld.install
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+
+# mixed
+.DS_Store
+.ipynb_checkpoints
+trace.*log
+
+dump/
+
+# clangd cache
+.cache
+external
+
+*metadata.txt
+
+target
 _build
 .venv

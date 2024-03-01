@@ -52,7 +52,7 @@ TrustedFlow保护了数据使用中（data-in-use）、数据存储（data-at-re
 -----------
 关于TrustedFlow的更多话题，欢迎阅读 `高阶话题 <advanced_topic/index>`_ 。
 
-1. `基于TrustedFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee>`_ 
+1. `基于TrustedFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee>`_
 
 
 路线图
