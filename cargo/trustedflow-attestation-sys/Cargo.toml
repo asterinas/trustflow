@@ -1,0 +1,17 @@
+[package]
+name = "trustedflow-attestation-sys"
+version = "0.1.0"
+edition = "2021"
+description = "Trustedflow Attestation Rust Library"
+license = "Apache-2"
+
+[features]
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+
+
+[build-dependencies]
+bindgen = "0.65.1"

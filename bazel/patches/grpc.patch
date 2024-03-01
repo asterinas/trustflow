@@ -1,0 +1,19 @@
+diff --git a/bazel/grpc_deps.bzl b/bazel/grpc_deps.bzl
+index 0954ed54d4..0c85e99b01 100644
+--- a/bazel/grpc_deps.bzl
++++ b/bazel/grpc_deps.bzl
+@@ -57,12 +57,12 @@ def grpc_deps():
+
+     native.bind(
+         name = "libssl",
+-        actual = "@boringssl//:ssl",
++        actual = "@com_github_openssl_openssl//:openssl",
+     )
+
+     native.bind(
+         name = "libcrypto",
+-        actual = "@boringssl//:crypto",
++        actual = "@com_github_openssl_openssl//:openssl",
+     )
+
+     native.bind(

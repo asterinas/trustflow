@@ -19,7 +19,9 @@ from typing import Dict, List
 
 from google.protobuf import json_format
 from kuscia.proto.api.v1alpha1.kusciatask.kuscia_task_pb2 import (
-    AllocatedPorts, ClusterDefine)
+    AllocatedPorts,
+    ClusterDefine,
+)
 from secretflow.spec.v1.data_pb2 import StorageConfig
 from secretflow.spec.v1.evaluation_pb2 import NodeEvalParam
 

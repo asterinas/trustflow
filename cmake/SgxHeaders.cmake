@@ -1,0 +1,18 @@
+if(EXISTS SGX_DIR)
+  set(SGX_PATH ${SGX_DIR})
+elseif(EXISTS SGX_ROOT)
+  set(SGX_PATH ${SGX_ROOT})
+elseif(EXISTS $ENV{SGX_SDK})
+  set(SGX_PATH $ENV{SGX_SDK})
+elseif(EXISTS $ENV{SGX_DIR})
+  set(SGX_PATH $ENV{SGX_DIR})
+elseif(EXISTS $ENV{SGX_ROOT})
+  set(SGX_PATH $ENV{SGX_ROOT})
+else()
+  set(SGX_PATH "/opt/intel/sgxsdk")
+endif()
+
+set(SGX_INCLUDE_PATH ${SGX_PATH}/include)
+
+add_library(sgx_headers INTERFACE)
+target_include_directories(sgx_headers INTERFACE ${SGX_INCLUDE_PATH})

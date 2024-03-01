@@ -17,13 +17,18 @@ import os
 
 import grpc
 from kuscia.proto.api.v1alpha1.datamesh.domaindata_pb2 import (
-    CreateDomainDataRequest, DomainData, QueryDomainDataRequest)
-from kuscia.proto.api.v1alpha1.datamesh.domaindata_pb2_grpc import \
-    DomainDataServiceStub
+    CreateDomainDataRequest,
+    DomainData,
+    QueryDomainDataRequest,
+)
+from kuscia.proto.api.v1alpha1.datamesh.domaindata_pb2_grpc import DomainDataServiceStub
 from kuscia.proto.api.v1alpha1.datamesh.domaindatasource_pb2 import (
-    DomainDataSource, QueryDomainDataSourceRequest)
-from kuscia.proto.api.v1alpha1.datamesh.domaindatasource_pb2_grpc import \
-    DomainDataSourceServiceStub
+    DomainDataSource,
+    QueryDomainDataSourceRequest,
+)
+from kuscia.proto.api.v1alpha1.datamesh.domaindatasource_pb2_grpc import (
+    DomainDataSourceServiceStub,
+)
 
 
 def create_channel(address: str):
