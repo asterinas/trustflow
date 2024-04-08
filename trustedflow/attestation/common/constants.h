@@ -21,6 +21,8 @@ constexpr char kReportVersion[] = "1.0";
 
 constexpr int kReportMaxSize = 40960;
 
+constexpr unsigned int kAttributeMaxSize = 40960;
+
 struct ReportType {
   static constexpr char kReportTypeBgcheck[] = "BackgroundCheck";
   static constexpr char kReportTypePassport[] = "Passport";

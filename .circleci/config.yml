@@ -63,6 +63,7 @@ jobs:
   docker_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1
+    resource_class: 2xlarge+
     steps:
       - checkout
       - setup_remote_docker
@@ -71,7 +72,8 @@ jobs:
           command: |
             MODE=<< pipeline.parameters.GHA_Mode >>
             COMMON_VERSION=<< pipeline.parameters.GHA_Version >>
-            OCCLUM_VERSION=occlum29.05-<< pipeline.parameters.GHA_Version >>
+            OCCLUM_VERSION=occlum0.30.1-<< pipeline.parameters.GHA_Version >>
+            OCCLUM_BASE_IMAGE=secretflow/occlum:0.30.1-rt-ubuntu22.04
 
             # login docker
             docker login -u secretflow -p ${DOCKER_DEPLOY_TOKEN}
@@ -94,15 +96,15 @@ jobs:
               occlum)
                 echo "build and publish in occlum mode, version: ${OCCLUM_VERSION}"
                 pushd docker
-                docker build -f trustedflow-dev-occlum-ubuntu20.04.Dockerfile -t secretflow/trustedflow-dev-occlum-ubuntu20.04:${OCCLUM_VERSION} .
-                docker tag secretflow/trustedflow-dev-occlum-ubuntu20.04:${OCCLUM_VERSION} secretflow/trustedflow-dev-occlum-ubuntu20.04:latest
-                docker push secretflow/trustedflow-dev-occlum-ubuntu20.04:${OCCLUM_VERSION}
-                docker push secretflow/trustedflow-dev-occlum-ubuntu20.04:latest
+                docker build -f trustedflow-dev-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} .
+                docker tag secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
+                docker push secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
 
-                docker build -f trustedflow-release-occlum-ubuntu20.04.Dockerfile -t secretflow/trustedflow-release-occlum-ubuntu20.04:${OCCLUM_VERSION} .
-                docker tag secretflow/trustedflow-release-occlum-ubuntu20.04:${OCCLUM_VERSION} secretflow/trustedflow-release-occlum-ubuntu20.04:latest
-                docker push secretflow/trustedflow-release-occlum-ubuntu20.04:${OCCLUM_VERSION}
-                docker push secretflow/trustedflow-release-occlum-ubuntu20.04:latest
+                docker build -f trustedflow-release-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} .
+                docker tag secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustedflow-release-occlum-ubuntu22.04:latest
+                docker push secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow/trustedflow-release-occlum-ubuntu22.04:latest
                 popd
                 ;;
               *)
@@ -110,7 +112,45 @@ jobs:
                 exit 1
                 ;;
             esac
+  pypi_publish:
+    docker:
+      - image: secretflow/trustedflow-dev-ubuntu22.04:latest
+    resource_class: large
+    parameters:
+      python_ver:
+        type: string
+    shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - run:
+          name: "build package and publish"
+          command: |
+            source /root/miniconda3/etc/profile.d/conda.sh
+            conda create -n build python=<< parameters.python_ver >> -y
+            conda activate build
 
+            pip install -r dev-requirements.txt
+
+            # verification package
+            export PACKAGE_TYPE=verification
+            python setup.py build_ext
+            python setup.py bdist_wheel && twine check dist/*
+
+            # generation package
+            export PACKAGE_TYPE=generation
+            export TEE_TYPE=sgx2
+            python setup.py build_ext
+            python setup.py bdist_wheel && twine check dist/*
+
+            export TEE_TYPE=tdx
+            python setup.py build_ext
+            python setup.py bdist_wheel && twine check dist/*
+
+            export TEE_TYPE=csv
+            python setup.py build_ext
+            python setup.py bdist_wheel && twine check dist/*
+
+            python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} dist/*.whl
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -128,3 +168,11 @@ workflows:
         - exits: << pipeline.parameters.GHA_Version >>
     jobs:
       - docker_image_publish
+  pypi-publish-workflow:
+    when:
+      equal: ["pypi_publish", << pipeline.parameters.GHA_Action >>]
+    jobs:
+      - pypi_publish:
+          matrix:
+            parameters:
+              python_ver: ["3.10"]

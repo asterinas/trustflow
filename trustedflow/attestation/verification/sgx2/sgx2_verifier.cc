@@ -98,6 +98,9 @@ void Sgx2AttestationVerifier::Init() {
 void Sgx2AttestationVerifier::ParseUnifiedReport(
     ual::UnifiedAttestationAttributes& attrs) {
   attrs.set_str_tee_platform(report_.str_tee_platform());
+  YACL_ENFORCE_GE(quote_.size(), sizeof(sgx_quote3_t),
+                  "quote size:{} is less than sgx_quote3_t:{}", quote_.size(),
+                  sizeof(sgx_quote3_t));
   const sgx_quote3_t* pquote =
       reinterpret_cast<const sgx_quote3_t*>(quote_.data());
   const sgx_report_body_t* report_body = &(pquote->report_body);
@@ -113,10 +116,10 @@ void Sgx2AttestationVerifier::ParseUnifiedReport(
       sizeof(sgx_measurement_t)));
 
   // ISV product id
-  int prod_id = report_body->isv_prod_id;
+  auto prod_id = report_body->isv_prod_id;
 
   // ISV SVN
-  int svn = report_body->isv_svn;
+  auto svn = report_body->isv_svn;
 
   // User Data
   YACL_ENFORCE_EQ(kReportDataSize, sizeof(sgx_report_data_t),

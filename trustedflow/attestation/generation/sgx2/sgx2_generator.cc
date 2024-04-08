@@ -95,10 +95,10 @@ void PrepareSgxReportData(
 
 }  // namespace
 
-void Sgx2AttestationGenerator::GenerateReport(
+secretflowapis::v2::sdc::UnifiedAttestationReport
+Sgx2AttestationGenerator::GenerateReport(
     const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams
-        &gen_params,
-    secretflowapis::v2::sdc::UnifiedAttestationReport &report) {
+        &gen_params) {
   SPDLOG_INFO("Start generating sgx2 report");
   YACL_ENFORCE(
       gen_params.report_type() ==
@@ -148,6 +148,7 @@ void Sgx2AttestationGenerator::GenerateReport(
 
     SPDLOG_INFO("Get sgx2 collateral succeed");
   }
+  secretflowapis::v2::sdc::UnifiedAttestationReport report;
   PB2JSON(dcap_report, report.mutable_json_report());
 
   report.set_str_report_version(trustedflow::attestation::kReportVersion);
@@ -155,6 +156,8 @@ void Sgx2AttestationGenerator::GenerateReport(
   report.set_str_tee_platform(
       trustedflow::attestation::Platform::kPlatformSgxDcap);
   SPDLOG_INFO("Generate sgx2 report succeed");
+
+  return report;
 }
 
 }  // namespace generation
