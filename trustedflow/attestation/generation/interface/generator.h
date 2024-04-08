@@ -24,10 +24,11 @@ class AttestationGenerator {
  public:
   virtual ~AttestationGenerator() = default;
 
-  virtual void GenerateReport(
+  virtual secretflowapis::v2::sdc::UnifiedAttestationReport GenerateReport(
       const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams&
-          gen_params,
-      secretflowapis::v2::sdc::UnifiedAttestationReport& report){};
+          gen_params) = 0;
+
+  std::string GenerateReportJson(const std::string& gen_params_json);
 };
 
 }  // namespace generation

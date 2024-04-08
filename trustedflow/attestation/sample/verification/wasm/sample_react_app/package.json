@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "author": "霓君",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "antd": "^5.15.1",
+    "umi": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.64",
+    "@types/react-dom": "^18.2.21",
+    "typescript": "^5.4.2"
+  }
+}

@@ -48,9 +48,7 @@ def trustedflow_cc_binary(
     cc_binary(
         linkopts = linkopts + ["-lm"],
         copts = copts + _trustedflow_copts(),
-        deps = deps + [
-            "@com_github_gperftools_gperftools//:gperftools",
-        ],
+        deps = deps,
         **kargs
     )
 
@@ -79,8 +77,6 @@ def trustedflow_cc_test(
         linkopts = linkopts + ["-lm"],
         copts = _trustedflow_copts() + copts,
         deps = deps + [
-            # use tcmalloc same as release bins. make them has same behavior on mem.
-            "@com_github_gperftools_gperftools//:gperftools",
             "@com_google_googletest//:gtest_main",
         ],
         # static link for tcmalloc

@@ -367,10 +367,18 @@ void CsvAttestationVerifier::ParseUnifiedReport(
   attrs.set_hex_platform_sw_version(absl::BytesToHexString(absl::string_view(
       reinterpret_cast<char*>(vm_version.data()), vm_version.size())));
 
-  auto user_data = RetrieveCsvQuotePlainData<uint8_t>(
-      quote_.user_data, USER_DATA_SIZE, quote_.anonce);
+  // we get the first 32 bytes as user_data and the last 32 bytes as
+  // public_key_hash
+  auto user_data = RetrieveCsvQuotePlainData<uint8_t>(quote_.user_data,
+                                                      HASH_LEN, quote_.anonce);
   attrs.set_hex_user_data(absl::BytesToHexString(absl::string_view(
       reinterpret_cast<char*>(user_data.data()), user_data.size())));
+
+  auto public_key_hash = RetrieveCsvQuotePlainData<uint8_t>(
+      quote_.user_data + HASH_LEN, HASH_LEN, quote_.anonce);
+  attrs.set_hex_hash_or_pem_pubkey(absl::BytesToHexString(
+      absl::string_view(reinterpret_cast<char*>(public_key_hash.data()),
+                        public_key_hash.size())));
 
   auto mnonce = RetrieveCsvQuotePlainData<uint8_t>(
       quote_.mnonce, GUEST_ATTESTATION_NONCE_SIZE, quote_.anonce);

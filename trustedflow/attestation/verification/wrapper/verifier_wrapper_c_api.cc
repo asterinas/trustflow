@@ -28,6 +28,85 @@
 extern "C" {
 #endif
 
+unsigned int GetAttributesMaxSize() {
+  return trustedflow::attestation::kAttributeMaxSize;
+}
+
+std::unique_ptr<trustedflow::attestation::verification::VerifierFactory>
+CreateFactory() {
+  std::unique_ptr<trustedflow::attestation::verification::VerifierFactory>
+      factory(new trustedflow::attestation::verification::VerifierFactory());
+  factory->Register(
+      trustedflow::attestation::Platform::kPlatformTdx,
+      &trustedflow::attestation::verification::TdxAttestationVerifier::Create);
+  factory->Register(
+      trustedflow::attestation::Platform::kPlatformSgxDcap,
+      &trustedflow::attestation::verification::Sgx2AttestationVerifier::Create);
+  factory->Register(
+      trustedflow::attestation::Platform::kPlatformCsv,
+      &trustedflow::attestation::verification::CsvAttestationVerifier::Create);
+  return factory;
+}
+
+int ParseAttributesFromReport(const char* report_json_c_str,
+                              unsigned int report_json_str_len, char* attrs_buf,
+                              unsigned int* attrs_buf_len, char* msg_buf,
+                              unsigned int* msg_buf_len, char* details_buf,
+                              unsigned int* details_buf_len) {
+  int code = 0;
+  try {
+    std::unique_ptr<trustedflow::attestation::verification::VerifierFactory>
+        factory = CreateFactory();
+    std::string report_json_str(report_json_c_str, report_json_str_len);
+    secretflowapis::v2::sdc::UnifiedAttestationAttributes attrs;
+    factory->Create(report_json_str)->ParseUnifiedReport(attrs);
+    // attrs to string
+    std::string attrs_json;
+    PB2JSON(attrs, &attrs_json);
+
+    YACL_ENFORCE_GE(
+        *attrs_buf_len, attrs_json.size(),
+        "attrs_buf_len(got {}) should not be less than attrs json size({})",
+        *attrs_buf_len, attrs_json.size());
+    *attrs_buf_len = attrs_json.size();
+    memcpy(attrs_buf, attrs_json.data(), *attrs_buf_len);
+
+  } catch (const yacl::ArgumentError& ex) {
+    code =
+        static_cast<int>(trustedflow::attestation::ErrorCode::kArgumentError);
+    strncpy(msg_buf, ex.what(), *msg_buf_len);
+    strncpy(details_buf, ex.stack_trace().c_str(), *details_buf_len);
+  } catch (const yacl::InvalidFormat& ex) {
+    code =
+        static_cast<int>(trustedflow::attestation::ErrorCode::kInvalidFormat);
+    strncpy(msg_buf, ex.what(), *msg_buf_len);
+    strncpy(details_buf, ex.stack_trace().c_str(), *details_buf_len);
+  } catch (const yacl::Exception& ex) {
+    code =
+        static_cast<int>(trustedflow::attestation::ErrorCode::kInternalError);
+    strncpy(msg_buf, ex.what(), *msg_buf_len);
+    strncpy(details_buf, ex.stack_trace().c_str(), *details_buf_len);
+  } catch (const std::exception& ex) {
+    code =
+        static_cast<int>(trustedflow::attestation::ErrorCode::kInternalError);
+    strncpy(msg_buf, ex.what(), *msg_buf_len);
+  }
+
+  // ensure msg end with '\0'
+  if (*msg_buf_len > 0) {
+    msg_buf[*msg_buf_len - 1] = '\0';
+    *msg_buf_len = strlen(msg_buf) + 1;
+  }
+
+  // ensure details end with '\0'
+  if (*details_buf_len > 0) {
+    details_buf[*details_buf_len - 1] = '\0';
+    *details_buf_len = strlen(details_buf) + 1;
+  }
+
+  return code;
+}
+
 int AttestationReportVerify(const char* report_json_c_str,
                             unsigned int report_json_str_len,
                             const char* policy_json_c_str,
@@ -36,22 +115,13 @@ int AttestationReportVerify(const char* report_json_c_str,
                             unsigned int* details_buf_len) {
   int code = 0;
   try {
-    trustedflow::attestation::verification::VerifierFactory factory;
-    factory.Register(trustedflow::attestation::Platform::kPlatformTdx,
-                     &trustedflow::attestation::verification::
-                         TdxAttestationVerifier::Create);
-    factory.Register(trustedflow::attestation::Platform::kPlatformSgxDcap,
-                     &trustedflow::attestation::verification::
-                         Sgx2AttestationVerifier::Create);
-    factory.Register(trustedflow::attestation::Platform::kPlatformCsv,
-                     &trustedflow::attestation::verification::
-                         CsvAttestationVerifier::Create);
-
+    std::unique_ptr<trustedflow::attestation::verification::VerifierFactory>
+        factory = CreateFactory();
     std::string report_json_str(report_json_c_str, report_json_str_len);
     std::string policy_json_str(policy_json_c_str, policy_json_str_len);
     secretflowapis::v2::sdc::UnifiedAttestationPolicy policy;
     JSON2PB(policy_json_str, &policy);
-    factory.Create(report_json_str)->VerifyReport(policy);
+    factory->Create(report_json_str)->VerifyReport(policy);
   } catch (const yacl::ArgumentError& ex) {
     code =
         static_cast<int>(trustedflow::attestation::ErrorCode::kArgumentError);

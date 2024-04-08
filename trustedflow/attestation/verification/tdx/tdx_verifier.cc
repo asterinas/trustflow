@@ -132,6 +132,13 @@ void TdxAttestationVerifier::ParseUnifiedReport(
     ual::UnifiedAttestationAttributes& attrs) {
   attrs.set_str_tee_platform(report_.str_tee_platform());
 
+  YACL_ENFORCE_GE(quote_.size(), sizeof(sgx_quote4_t),
+                  "quote size:{} is less than sgx_quote4_t:{}", quote_.size(),
+                  sizeof(sgx_quote4_t));
+  YACL_ENFORCE_GE(quote_.size(), sizeof(sgx_quote5_t),
+                  "quote size:{} is less than sgx_quote5_t:{}", quote_.size(),
+                  sizeof(sgx_quote5_t));
+
   const sgx_quote4_t* pquote4 =
       reinterpret_cast<const sgx_quote4_t*>(quote_.data());
   const sgx_quote5_t* pquote5 =

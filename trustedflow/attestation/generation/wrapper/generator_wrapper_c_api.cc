@@ -59,8 +59,7 @@ int GenerateAttestationReport(const char* params_buf,
     // generate report
     auto generator =
         trustedflow::attestation::generation::CreateAttestationGenerator();
-    secretflowapis::v2::sdc::UnifiedAttestationReport report;
-    generator->GenerateReport(gen_params, report);
+    auto report = generator->GenerateReport(gen_params);
 
     // report to string
     std::string report_json;
