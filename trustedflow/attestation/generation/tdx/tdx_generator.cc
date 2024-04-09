@@ -76,10 +76,10 @@ void PrepareTdxReportData(
 }
 }  // namespace
 
-void TdxAttestationGenerator::GenerateReport(
+secretflowapis::v2::sdc::UnifiedAttestationReport
+TdxAttestationGenerator::GenerateReport(
     const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams&
-        gen_params,
-    secretflowapis::v2::sdc::UnifiedAttestationReport& report) {
+        gen_params) {
   SPDLOG_INFO("Start generating tdx report");
   YACL_ENFORCE(
       gen_params.report_type() ==
@@ -122,12 +122,15 @@ void TdxAttestationGenerator::GenerateReport(
 
     SPDLOG_INFO("Get tdx collateral succeed");
   }
+  secretflowapis::v2::sdc::UnifiedAttestationReport report;
   PB2JSON(tdx_report, report.mutable_json_report());
 
   report.set_str_report_version(trustedflow::attestation::kReportVersion);
   report.set_str_report_type(gen_params.report_type());
   report.set_str_tee_platform(trustedflow::attestation::Platform::kPlatformTdx);
   SPDLOG_INFO("Generate tdx report succeed");
+
+  return report;
 }
 
 }  // namespace generation

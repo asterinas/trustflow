@@ -19,15 +19,15 @@ constraint支持对以下元信息进行限制。具体语法上，每一条cons
 #### mr_enclave
 限制代码的MRENCLAVE，关于MRENCLAVE的说明参见 [Enclave](./tee/sgx.md#enclave) 。
 
-```bash
-r.env.tee.mr_encalve == "mrenclave of the enclave"
+```yaml
+r.env.tee.sgx.mr_encalve=="mrenclave of the enclave"
 ```
 
 #### mr_signer
 限制代码的MRSIGNER，关于MRSIGNER的说明参见 [Enclave](./tee/sgx.md#enclave) 。
 
-```bash
-r.env.tee.mr_signer == "mrsigner of the enclave"
+```yaml
+r.env.tee.sgx.mr_signer=="mrsigner of the enclave"
 ```
 
 #### op
@@ -50,15 +50,15 @@ r.env.tee.mr_signer == "mrsigner of the enclave"
 - [预测偏差评估](./apps/prediction_bias_eval.md): `OP_PREDICTION_BIAS_EVALUATION`
 
 示例写法如下。
-```bash
+```yaml
 # 表示限制仅能对数据执行XGBoost训练。
-r.op == "OP_XGB"
+r.op=="OP_XGB"
 ```
 
 #### （暂不可用）execution_time
 限制执行时间。
-```bash
-r.execution_time <= "2023-10-01 23:59:59"
+```yaml
+r.execution_time<="2023-10-01 23:59:59"
 ```
 
 ### 元素之间支持的操作符
@@ -112,18 +112,18 @@ op_constraints表示作用于特定算法的约束，由一条或者多条op_con
         {
             "op_name":"OP_XGB",
             "constraints":[
-                "r.op == \"OP_XGB\" && r.env.tee.mr_enclave==\"XGB_ENCLAVE\""
+                "r.op==\"OP_XGB\" && r.env.tee.sgx.mr_enclave==\"XGB_ENCLAVE\""
             ]
         },
         {
             "op_name":"OP_LR",
             "constraints":[
-                "r.op == \"OP_LR\" && r.env.tee.mr_enclave==\"LR_ENCLAVE\""
+                "r.op==\"OP_LR\" && r.env.tee.sgx.mr_enclave==\"LR_ENCLAVE\""
             ]
         }
     ],
     "global_constraints":[
-        "r.env.tee.mr_signer=\"MRSIGNER\""
+        "r.env.tee.sgx.mr_signer==\"MRSIGNER\""
     ]
 }
 ```
@@ -162,18 +162,18 @@ op_constraints表示作用于特定算法的约束，由一条或者多条op_con
                 {
                     "op_name":"OP_XGB",
                     "constraints":[
-                        "r.op == \"OP_XGB\" && r.env.tee.mr_enclave==\"XGB_ENCLAVE\""
+                        "r.op==\"OP_XGB\" && r.env.tee.sgx.mr_enclave==\"XGB_ENCLAVE\""
                     ]
                 },
                 {
                     "op_name":"OP_LR",
                     "constraints":[
-                        "r.op == \"OP_LR\" && r.env.tee.mr_enclave==\"LR_ENCLAVE\""
+                        "r.op==\"OP_LR\" && r.env.tee.sgx.mr_enclave==\"LR_ENCLAVE\""
                     ]
                 }
             ],
             "global_constraints":[
-                "r.env.tee.mr_signer=\"MRSIGNER\""
+                "r.env.tee.sgx.mr_signer==\"MRSIGNER\""
             ]
         }
     ]

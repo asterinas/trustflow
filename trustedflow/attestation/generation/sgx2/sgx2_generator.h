@@ -22,10 +22,9 @@ namespace generation {
 
 class Sgx2AttestationGenerator : public AttestationGenerator {
  public:
-  void GenerateReport(
+  secretflowapis::v2::sdc::UnifiedAttestationReport GenerateReport(
       const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams&
-          gen_params,
-      secretflowapis::v2::sdc::UnifiedAttestationReport& report) override;
+          gen_params) override;
 };
 
 }  // namespace generation

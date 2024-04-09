@@ -18,7 +18,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 image=secretflow/trustedflow-dev-ubuntu22.04:latest
 DOCKER=docker
-project=trusteflow
+project=trustedflow
 if [[ $1 == 'enter' ]]; then
     $DOCKER exec -it ${project}-build-ubuntu-$(whoami) bash
 else

@@ -26,41 +26,48 @@
 #include "secretflowapis/v2/sdc/ual.pb.h"
 
 int main() {
-  // test class api
-  auto generator =
-      trustedflow::attestation::generation::CreateAttestationGenerator();
-  secretflowapis::v2::sdc::UnifiedAttestationGenerationParams gen_params;
-  gen_params.set_report_type("Passport");
-  gen_params.mutable_report_params()->set_hex_user_data(
-      absl::BytesToHexString("user_data"));
-  secretflowapis::v2::sdc::UnifiedAttestationReport report;
-  generator->GenerateReport(gen_params, report);
-  std::string report_json;
-  PB2JSON(report, &report_json);
-  SPDLOG_INFO("report from c++ api: {}, len: {}", report_json,
-              report_json.size());
+  try {
+    // test class api
+    auto generator =
+        trustedflow::attestation::generation::CreateAttestationGenerator();
+    secretflowapis::v2::sdc::UnifiedAttestationGenerationParams gen_params;
+    gen_params.set_report_type("Passport");
+    gen_params.mutable_report_params()->set_hex_user_data(
+        absl::BytesToHexString("user_data"));
+    auto report = generator->GenerateReport(gen_params);
+    std::string report_json;
+    PB2JSON(report, &report_json);
+    SPDLOG_INFO("report from c++ api: {}, len: {}", report_json,
+                report_json.size());
 
-  // test c api
-  std::string params_buf;
-  PB2JSON(gen_params, &params_buf);
-  unsigned int report_len;
-  auto code = GetAttestationReportSize(params_buf.c_str(), params_buf.size(),
-                                       &report_len);
-  YACL_ENFORCE_EQ(code,
-                  static_cast<int>(trustedflow::attestation::ErrorCode::kOk),
-                  "GetAttestationReportSize err: {}", code);
+    // test c api
+    std::string params_buf;
+    PB2JSON(gen_params, &params_buf);
+    unsigned int report_len;
+    auto code = GetAttestationReportSize(params_buf.c_str(), params_buf.size(),
+                                         &report_len);
+    YACL_ENFORCE_EQ(code,
+                    static_cast<int>(trustedflow::attestation::ErrorCode::kOk),
+                    "GetAttestationReportSize err: {}", code);
 
-  unsigned int msg_len = 512;
-  unsigned int details_len = 4096;
-  std::vector<char> report_buf(report_len);
-  std::vector<char> msg(msg_len);
-  std::vector<char> details(details_len);
-  code = GenerateAttestationReport(params_buf.c_str(), params_buf.size(),
-                                   report_buf.data(), &report_len, msg.data(),
-                                   &msg_len, details.data(), &details_len);
-  YACL_ENFORCE_EQ(code,
-                  static_cast<int>(trustedflow::attestation::ErrorCode::kOk),
-                  "GenerateAttestationReport err: {}, msg: {}, details: {}",
-                  code, msg.data(), details.data());
-  SPDLOG_INFO("report from c api: {}, len: {}", report_buf.data(), report_len);
+    unsigned int msg_len = 512;
+    unsigned int details_len = 4096;
+    std::vector<char> report_buf(report_len);
+    std::vector<char> msg(msg_len);
+    std::vector<char> details(details_len);
+    code = GenerateAttestationReport(params_buf.c_str(), params_buf.size(),
+                                     report_buf.data(), &report_len, msg.data(),
+                                     &msg_len, details.data(), &details_len);
+    YACL_ENFORCE_EQ(code,
+                    static_cast<int>(trustedflow::attestation::ErrorCode::kOk),
+                    "GenerateAttestationReport err: {}, msg: {}, details: {}",
+                    code, msg.data(), details.data());
+    SPDLOG_INFO("report from c api: {}, len: {}", report_buf.data(),
+                report_len);
+  } catch (const std::exception& e) {
+    SPDLOG_ERROR("{}", e.what());
+    return -1;
+  }
+
+  return 0;
 }

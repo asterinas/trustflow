@@ -23,7 +23,7 @@ def trustedflow_dependencies():
     """
     trustedflow deps
     """
-    _com_github_gperftools_gperftools()
+    _local_openssl_openssl()
 
     _com_github_grpc_grpc()
 
@@ -43,17 +43,14 @@ def trustedflow_dependencies():
 
     _com_github_httplib()
 
-def _com_github_gperftools_gperftools():
+    _com_github_pybind11()
+
+def _local_openssl_openssl():
     maybe(
-        http_archive,
-        name = "com_github_gperftools_gperftools",
-        type = "tar.gz",
-        strip_prefix = "gperftools-2.9.1",
-        sha256 = "ea566e528605befb830671e359118c2da718f721c27225cbbc93858c7520fee3",
-        urls = [
-            "https://github.com/gperftools/gperftools/releases/download/gperftools-2.9.1/gperftools-2.9.1.tar.gz",
-        ],
-        build_file = "@trustedflow//bazel:gperftools.BUILD",
+        native.new_local_repository,
+        name = "com_github_openssl_openssl",
+        build_file = "@trustedflow//bazel:openssl.BUILD",
+        path = "/",
     )
 
 def _com_github_grpc_grpc():
@@ -88,11 +85,11 @@ def _com_github_sf_apis():
         http_archive,
         name = "sf_apis",
         urls = [
-            "https://github.com/secretflow/secure-data-capsule-apis/archive/986ce7e6fed128a8ebedc0c02cc6abae01124716.tar.gz",
+            "https://github.com/secretflow/secure-data-capsule-apis/archive/47a47f0f0096fdcc2c13c8ba3b86448d2795b829.tar.gz",
         ],
-        strip_prefix = "secure-data-capsule-apis-986ce7e6fed128a8ebedc0c02cc6abae01124716",
+        strip_prefix = "secure-data-capsule-apis-47a47f0f0096fdcc2c13c8ba3b86448d2795b829",
         build_file = "@trustedflow//bazel:sf_apis.BUILD",
-        sha256 = "d664a2381bfc64f5c0a352ed15388dbba568d473b46cdd07a3a02de6ced4bb39",
+        sha256 = "c7b52eb51be3b4f1f380b8fb7cdd80a101e59e9471ca01d7b6c3441bd463dc3b",
     )
 
 def _com_github_cppcodec():
@@ -157,5 +154,29 @@ def _com_github_httplib():
         type = "tar.gz",
         urls = [
             "https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.11.2.tar.gz",
+        ],
+    )
+
+def _com_github_pybind11():
+    # Python binding.
+    maybe(
+        http_archive,
+        name = "pybind11_bazel",
+        sha256 = "e8355ee56c2ff772334b4bfa22be17c709e5573f6d1d561c7176312156c27bd4",
+        strip_prefix = "pybind11_bazel-2.11.1",
+        urls = [
+            "https://github.com/pybind/pybind11_bazel/releases/download/v2.11.1/pybind11_bazel-2.11.1.tar.gz",
+        ],
+    )
+
+    # We still require the pybind library.
+    maybe(
+        http_archive,
+        name = "pybind11",
+        build_file = "@pybind11_bazel//:pybind11.BUILD",
+        sha256 = "d475978da0cdc2d43b73f30910786759d593a9d8ee05b1b6846d1eb16c6d2e0c",
+        strip_prefix = "pybind11-2.11.1",
+        urls = [
+            "https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz",
         ],
     )

@@ -79,7 +79,15 @@ void PrepareCsvUserData(
                   HASH_LEN * 2,
                   gen_params.report_params().hex_user_data().length());
 
+  YACL_ENFORCE(gen_params.report_hex_nonce().empty() ||
+                   gen_params.report_params().hex_user_data().empty(),
+               "Not support both nonce and user data");
+
   memset(&user_data, 0, sizeof(csv_attestation_user_data));
+  if (!gen_params.report_hex_nonce().empty()) {
+    auto tmp_nonce = absl::HexStringToBytes(gen_params.report_hex_nonce());
+    memcpy(user_data.data, tmp_nonce.data(), tmp_nonce.size());
+  }
   if (!gen_params.report_params().hex_user_data().empty()) {
     auto tmp_user_data =
         absl::HexStringToBytes(gen_params.report_params().hex_user_data());
@@ -91,13 +99,9 @@ void PrepareCsvUserData(
     memcpy(user_data.data + HASH_LEN, public_key_hash.data(),
            public_key_hash.size());
   }
-  if (!gen_params.report_hex_nonce().empty()) {
-    auto tmp_nonce = absl::HexStringToBytes(gen_params.report_hex_nonce());
-    memcpy(user_data.mnonce, tmp_nonce.data(), tmp_nonce.size());
-  } else {
-    yacl::crypto::FillRand(reinterpret_cast<char *>(user_data.mnonce),
-                           GUEST_ATTESTATION_NONCE_SIZE, true);
-  }
+  yacl::crypto::FillRand(reinterpret_cast<char *>(user_data.mnonce),
+                         GUEST_ATTESTATION_NONCE_SIZE, true);
+
   auto user_data_hash = yacl::crypto::Sm3(yacl::ByteContainerView(
       &user_data, GUEST_ATTESTATION_DATA_SIZE + GUEST_ATTESTATION_NONCE_SIZE));
   std::copy(user_data_hash.begin(), user_data_hash.end(), user_data.hash.block);
@@ -105,10 +109,10 @@ void PrepareCsvUserData(
 
 }  // namespace
 
-void CsvAttestationGenerator::GenerateReport(
+secretflowapis::v2::sdc::UnifiedAttestationReport
+CsvAttestationGenerator::GenerateReport(
     const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams
-        &gen_params,
-    secretflowapis::v2::sdc::UnifiedAttestationReport &report) {
+        &gen_params) {
   SPDLOG_INFO("Start generating csv report");
   YACL_ENFORCE(
       gen_params.report_type() ==
@@ -194,13 +198,15 @@ void CsvAttestationGenerator::GenerateReport(
 
   hygon_csv_report.set_str_chip_id(std::move(chip_id_str));
 
+  secretflowapis::v2::sdc::UnifiedAttestationReport report;
   PB2JSON(hygon_csv_report, report.mutable_json_report());
 
   report.set_str_report_version(trustedflow::attestation::kReportVersion);
   report.set_str_report_type(gen_params.report_type());
   report.set_str_tee_platform(trustedflow::attestation::Platform::kPlatformCsv);
-
   SPDLOG_INFO("Generate csv report succeed");
+
+  return report;
 }
 
 }  // namespace generation
