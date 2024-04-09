@@ -115,7 +115,7 @@ jobs:
   pypi_publish:
     docker:
       - image: secretflow/trustedflow-dev-ubuntu22.04:latest
-    resource_class: large
+    resource_class: 2xlarge+
     parameters:
       python_ver:
         type: string

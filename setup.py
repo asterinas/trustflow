@@ -65,7 +65,7 @@ class BuildBazelExtension(build_ext.build_ext):
             + f" //{ext._bazel_workspace}:{ext._bazel_target}"
             + " --compilation_mode="
             + ("dbg" if self.debug else "opt")
-            + " --repository_cache=/tmp/bazel_repo_cache --remote_download_minimal"
+            + " --repository_cache=/tmp/bazel_repo_cache"
         )
         os.system(command)
 
