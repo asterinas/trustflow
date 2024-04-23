@@ -4,7 +4,7 @@ index 5fed485..7cb2eb8 100644
 +++ b/QuoteGeneration/buildenv.mk
 @@ -106,11 +106,15 @@ ifeq ($(CC_NO_LESS_THAN_8), 1)
  endif
-
+ 
  # turn on stack protector for SDK
 -CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
 -ifeq ($(CC_BELOW_4_9), 1)
@@ -20,10 +20,10 @@ index 5fed485..7cb2eb8 100644
 -    COMMON_FLAGS += -fstack-protector-strong
 +    COMMON_FLAGS += -fno-stack-protector
  endif
-
+ 
  ifdef DEBUG
 @@ -202,6 +206,13 @@ COMMON_LDFLAGS := -Wl,-z,relro,-z,now,-z,noexecstack
-
+ 
  # Enable build static library
  GEN_STATIC ?= 0
 +GEN_DYNAMIC ?= 1
@@ -33,7 +33,7 @@ index 5fed485..7cb2eb8 100644
 +        $(error Aborting)
 +    endif
 +endif
-
+ 
  # Compiler and linker options for an Enclave
  #
 diff --git a/QuoteGeneration/common/src/se_thread.c b/QuoteGeneration/common/src/se_thread.c
@@ -41,7 +41,7 @@ index caba85b..9bfebb3 100644
 --- a/QuoteGeneration/common/src/se_thread.c
 +++ b/QuoteGeneration/common/src/se_thread.c
 @@ -59,6 +59,19 @@ int	se_tls_set_value(se_tls_index_t tls_index, void *tls_value) { return TlsSetV
-
+ 
  void se_mutex_init(se_mutex_t* mutex)
  {
 +#ifdef __EMSCRIPTEN__
@@ -62,18 +62,18 @@ index caba85b..9bfebb3 100644
  #elif defined(PTHREAD_RECURSIVE_MUTEX_INITIALIZER)
 @@ -68,7 +81,8 @@ void se_mutex_init(se_mutex_t* mutex)
  #endif
-
+ 
      /* C doesn't allow `*mutex = PTHREAD_..._INITIALIZER'.*/
 -    memcpy_s(mutex, sizeof(tmp), &tmp, sizeof(tmp));
 +    memcpy(mutex, &tmp, sizeof(tmp));
 +#endif
  }
-
+ 
  int se_mutex_lock(se_mutex_t* mutex) { return (0 == pthread_mutex_lock(mutex)); }
 @@ -86,7 +100,11 @@ int se_thread_cond_signal(se_cond_t *cond){return (0 == pthread_cond_signal(cond
  int se_thread_cond_broadcast(se_cond_t *cond){return (0 == pthread_cond_broadcast(cond));}
  int se_thread_cond_destroy(se_cond_t* cond){return (0 == pthread_cond_destroy(cond));}
-
+ 
 -unsigned int se_get_threadid(void) { return (unsigned)syscall(__NR_gettid);}
 +#ifndef __EMSCRIPTEN__
 + unsigned int se_get_threadid(void) { return (unsigned)syscall(__NR_gettid);}
@@ -88,9 +88,9 @@ index 05dc6de..fdecdfe 100644
 --- a/QuoteGeneration/qcnl/linux/Makefile
 +++ b/QuoteGeneration/qcnl/linux/Makefile
 @@ -82,12 +82,15 @@ PCK_Selection_Lib_Static := PCKCertSelection
-
+ 
  all: install_lib
-
+ 
 -install_lib: $(CNL_Lib_Name_Dynamic) | $(BUILD_DIR)
 -	@$(CP) $(CNL_Lib_Name_Dynamic) $|
 +install_lib: $(BUILD_DIR)
@@ -98,13 +98,13 @@ index 05dc6de..fdecdfe 100644
 +	@$(MAKE) $(CNL_Lib_Name_Dynamic)
 +	@$(CP) $(CNL_Lib_Name_Dynamic) $(BUILD_DIR)
 +endif
-
+ 
  ifeq ($(GEN_STATIC),1)
-	@$(MAKE) $(CNL_Lib_Name_Static)
+ 	@$(MAKE) $(CNL_Lib_Name_Static)
 -	@$(CP) $(CNL_Lib_Name_Static) $|
 +	@$(CP) $(CNL_Lib_Name_Static) $(BUILD_DIR)
  endif
-
+ 
  run: all
 diff --git a/QuoteGeneration/qcnl/linux/network_wrapper.cpp b/QuoteGeneration/qcnl/linux/network_wrapper.cpp
 index 6545700..c042cc7 100644
@@ -124,7 +124,7 @@ index 6545700..c042cc7 100644
 +#endif
  #include <dlfcn.h>
  #include <unistd.h>
-
+ 
 +#ifndef __EMSCRIPTEN__
  typedef struct _network_malloc_info_t {
      char *base;
@@ -132,7 +132,7 @@ index 6545700..c042cc7 100644
 @@ -220,6 +227,7 @@ static sgx_qcnl_error_t curl_error_to_qcnl_error(CURLcode curl_error) {
      }
  }
-
+ 
 +
  template <typename T>
  static CURLcode curl_set_opt_with_log(CURL *handle, CURLoption option, T param) {
@@ -142,13 +142,13 @@ index 6545700..c042cc7 100644
      return result;
  }
 +#endif
-
+ 
  /**
   * This method converts PCCS HTTP status codes to QCNL error codes
 @@ -256,6 +265,7 @@ static sgx_qcnl_error_t pccs_status_to_qcnl_error(long pccs_status_code) {
      }
  }
-
+ 
 +
  /**
   * This method calls curl library to perform https POST request with raw body in JSON format and returns response body and header
@@ -162,7 +162,7 @@ index 6545700..c042cc7 100644
                                      http_header_map &header_map,
                                      const char *req_body,
 @@ -427,3 +438,128 @@ cleanup:
-
+ 
      return ret;
  }
 +#else
@@ -302,16 +302,16 @@ index b1717e7..ba29bee 100644
  #include <curl/curl.h>
 +#endif
  #include <fstream>
-
+ 
  sgx_qcnl_error_t QcnlConfigLegacy::load_config() {
 diff --git a/QuoteGeneration/qpl/linux/Makefile b/QuoteGeneration/qpl/linux/Makefile
 index f0bee84..adfce35 100644
 --- a/QuoteGeneration/qpl/linux/Makefile
 +++ b/QuoteGeneration/qpl/linux/Makefile
 @@ -74,12 +74,15 @@ QPL_SO_VERSION:= $(shell echo $(QPL_VERSION) |awk -F. '{print $$1}')
-
+ 
  all: install_lib
-
+ 
 -install_lib: $(QPL_Lib_Name_Dynamic) | $(BUILD_DIR)
 -	@$(CP) $(QPL_Lib_Name_Dynamic) $|
 +install_lib: $(BUILD_DIR)
@@ -319,13 +319,13 @@ index f0bee84..adfce35 100644
 +	@$(MAKE) $(QPL_Lib_Name_Dynamic)
 +	@$(CP) $(QPL_Lib_Name_Dynamic) $(BUILD_DIR)
 +endif
-
+ 
  ifeq ($(GEN_STATIC),1)
-	@$(MAKE) $(QPL_Lib_Name_Static)
+ 	@$(MAKE) $(QPL_Lib_Name_Static)
 -	@$(CP) $(QPL_Lib_Name_Static) $|
 +	@$(CP) $(QPL_Lib_Name_Static) $(BUILD_DIR)
  endif
-
+ 
  run: all
 diff --git a/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp b/QuoteVerification/QVL/Src/AttestationCommons/src/Utils/GMTime.cpp
 index b963c0b..3ffeaec 100644
@@ -334,19 +334,19 @@ index b963c0b..3ffeaec 100644
 @@ -42,7 +42,7 @@
  #define FALSE	0
  #define TRUE	1
-
+ 
 -#ifdef _MSC_VER
 +#if defined(_MSC_VER) || defined(__EMSCRIPTEN__)
  #include <stdint.h>
  typedef int32_t	    int_fast32_t;
  typedef int64_t     int_fast64_t;
-
+ 
 diff --git a/QuoteVerification/QvE/Enclave/qve.cpp b/QuoteVerification/QvE/Enclave/qve.cpp
 index a5972ce..bb0b69b 100644
 --- a/QuoteVerification/QvE/Enclave/qve.cpp
 +++ b/QuoteVerification/QvE/Enclave/qve.cpp
 @@ -60,7 +60,7 @@
-
+ 
  #ifdef _TD_MIGRATION
  #define SGX_TRUSTED
 -#include "migtd_utils.h"
@@ -361,7 +361,7 @@ index 19e05e4..fe08942 100644
 @@ -57,8 +57,15 @@ QVL_SRC_PATH 			?= $(DCAP_QV_DIR)/QVL/Src
  SGXSSL_PACKAGE_PATH 	?= $(DCAP_QV_DIR)/sgxssl/Linux/package
  PREBUILD_OPENSSL_PATH	?= $(DCAP_QV_DIR)/../prebuilt/openssl
-
+ 
 -SGX_COMMON_CFLAGS := $(COMMON_FLAGS) -m64 -Wjump-misses-init -Wstrict-prototypes -Wunsuffixed-float-constants
 -SGX_COMMON_CXXFLAGS := $(COMMON_FLAGS) -m64 -Wnon-virtual-dtor -std=c++14
 +SGX_COMMON_CFLAGS := $(COMMON_FLAGS)  -Wjump-misses-init -Wstrict-prototypes -Wunsuffixed-float-constants
@@ -373,8 +373,8 @@ index 19e05e4..fe08942 100644
 +SGX_COMMON_CFLAGS += -m64
 +SGX_COMMON_CXXFLAGS += -m64
 +endif
-
-
+ 
+ 
  QVL_LIB_PATH := $(QVL_SRC_PATH)/AttestationLibrary
 diff --git a/QuoteVerification/dcap_quoteverify/linux/Makefile b/QuoteVerification/dcap_quoteverify/linux/Makefile
 index 5e9327c..6c27a0b 100644
@@ -383,26 +383,28 @@ index 5e9327c..6c27a0b 100644
 @@ -35,7 +35,7 @@ include ../../buildenv.mk
  INSTALL_PATH 		?= /usr/lib/x86_64-linux-gnu
  QVE_SRC_PATH		:= $(DCAP_QV_DIR)/QvE
-
+ 
 -QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include
 +QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include  -I$(DCAP_QG_DIR)/qpl/inc
  QVL_PARSER_INC  += -I$(PREBUILD_OPENSSL_PATH)/inc
  QVL_VERIFY_INC	:= -I$(QVE_SRC_PATH)/Include \
-				   -I../inc \
+ 				   -I../inc \
 @@ -86,13 +86,15 @@ all: install_lib
  $(BUILD_DIR):
-	@$(MKDIR) $@
-
+ 	@$(MKDIR) $@
+ 
 -install_lib: $(QVL_VERIFY_LIB_NAME_Dynamic) | $(BUILD_DIR)
 -	@$(CP) $(QVL_VERIFY_LIB_NAME_Dynamic) $|
 +install_lib: $(BUILD_DIR)
 +ifeq ($(GEN_DYNAMIC),1)
 +	@$(CP) $(QVL_VERIFY_LIB_NAME_Dynamic) $(BUILD_DIR)
-	ln -sf $|/$(QVL_VERIFY_LIB_NAME_Dynamic) $|/$(QVL_VERIFY_LIB_NAME_Dynamic).1
+ 	ln -sf $|/$(QVL_VERIFY_LIB_NAME_Dynamic) $|/$(QVL_VERIFY_LIB_NAME_Dynamic).1
 +endif
-
+ 
  ifeq ($(GEN_STATIC),1)
-	@$(MAKE) $(QVL_VERIFY_LIB_NAME_Static)
+ 	@$(MAKE) $(QVL_VERIFY_LIB_NAME_Static)
 -	@$(CP) $(QVL_VERIFY_LIB_NAME_Static) $|
 +	@$(CP) $(QVL_VERIFY_LIB_NAME_Static) $(BUILD_DIR)
  endif
+ 
+ 
