@@ -172,7 +172,7 @@ jobs:
             go install github.com/tcnksm/ghr@latest
             cd ..
             ghr -t "${GITHUB_TOKEN}" -u "${CIRCLE_PROJECT_USERNAME}" \
-                -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" -delete "${VERSION}" \
+                -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" "${VERSION}" \
                 build/trustedflow/attestation/verification/trustedflow_verifier.js
 
 # Invoke jobs via workflows
