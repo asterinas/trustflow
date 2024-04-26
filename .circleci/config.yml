@@ -152,6 +152,29 @@ jobs:
 
             python3 -m twine upload -r pypi -u __token__ -p ${PYPI_TWINE_TOKEN} dist/*.whl
 
+  wasm_verifier_publish:
+    docker:
+      - image: secretflow/trustedflow-dev-ubuntu22.04:latest
+    resource_class: 2xlarge+
+    steps:
+      - checkout
+      - run:
+          name: "build wasm"
+          command: |
+            source ~/.bashrc
+            source /opt/emsdk/emsdk_env.sh
+            export PATH=/root/go/bin:/root/.local/bin:$PATH
+            protoc --version
+            VERSION=<< pipeline.parameters.GHA_Version >>
+            echo "version: $VERSION"
+            cmake -H. -Bbuild
+            cd build && make -j8
+            go install github.com/tcnksm/ghr@latest
+            cd ..
+            ghr -t "${GITHUB_TOKEN}" -u "${CIRCLE_PROJECT_USERNAME}" \
+                -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" -delete "${VERSION}" \
+                build/trustedflow/attestation/verification/trustedflow_verifier.js
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -160,7 +183,14 @@ workflows:
       not: << pipeline.parameters.GHA_Action >>
     jobs:
       - linux_ut
-  docker-image-publish-workflow:
+  wasm-verifier-publish-workflow:
+    when:
+      and:
+        - equal: ["wasm_verifier_publish", << pipeline.parameters.GHA_Action >>]
+        - exits: << pipeline.parameters.GHA_Version >>
+    jobs:
+      - wasm_verifier_publish
+  wasm-publish-workflow:
     when:
       and:
         - equal: ["docker_image_publish", << pipeline.parameters.GHA_Action >>]
