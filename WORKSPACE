@@ -18,9 +18,22 @@ load("//bazel:repositories.bzl", "trustedflow_dependencies")
 
 trustedflow_dependencies()
 
+load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
+
+grpc_deps()
+
+load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+
+grpc_extra_deps()
+
 load("@yacl//bazel:repositories.bzl", "yacl_deps")
 
 yacl_deps()
+
+# need by yacl
+load("@rules_python//python:repositories.bzl", "py_repositories")
+
+py_repositories()
 
 load("@rules_proto_grpc//:repositories.bzl", "rules_proto_grpc_repos", "rules_proto_grpc_toolchains")
 
@@ -31,14 +44,6 @@ rules_proto_grpc_repos()
 load("@rules_proto_grpc//cpp:repositories.bzl", rules_proto_grpc_cpp_repos = "cpp_repos")
 
 rules_proto_grpc_cpp_repos()
-
-load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
-
-grpc_deps()
-
-load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
-
-grpc_extra_deps()
 
 load(
     "@rules_foreign_cc//foreign_cc:repositories.bzl",

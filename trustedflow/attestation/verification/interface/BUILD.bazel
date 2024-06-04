@@ -21,6 +21,7 @@ cc_library(
     deps = [
         "//trustedflow/attestation/utils:json2pb",
         "@sf_apis//:cc_sf_apis_proto",
-        "@yacl//yacl/crypto/base/hash:ssl_hash",
+        "@yacl//yacl/crypto/hash:ssl_hash",
     ],
 )
+

@@ -27,7 +27,7 @@
 #include "spdlog/spdlog.h"
 #include "tdx_attest.h"
 #include "yacl/base/exception.h"
-#include "yacl/crypto/base/hash/hash_utils.h"
+#include "yacl/crypto/hash/hash_utils.h"
 
 #include "trustedflow/attestation/collateral/intel_collateral.h"
 #include "trustedflow/attestation/common/constants.h"

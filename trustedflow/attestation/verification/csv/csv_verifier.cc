@@ -21,8 +21,8 @@
 #include "openssl/params.h"
 #include "spdlog/spdlog.h"
 #include "yacl/base/exception.h"
-#include "yacl/crypto/base/openssl_wrappers.h"
-#include "yacl/crypto/base/sign/sm2_signing.h"
+#include "yacl/crypto/openssl_wrappers.h"
+#include "yacl/crypto/sign/sm2_signing.h"
 
 #include "trustedflow/attestation/common/constants.h"
 #include "trustedflow/attestation/utils/json2pb.h"

@@ -104,16 +104,15 @@ def _com_github_cppcodec():
         sha256 = "0edaea2a9d9709d456aa99a1c3e17812ed130f9ef2b5c2d152c230a5cbc5c482",
     )
 
-# include openssl deps
 def _com_github_yacl():
     maybe(
         http_archive,
         name = "yacl",
         urls = [
-            "https://github.com/secretflow/yacl/archive/ea6e1ea567903804f17525fe04ede706815ece38.tar.gz",
+            "https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b0.tar.gz",
         ],
-        strip_prefix = "yacl-ea6e1ea567903804f17525fe04ede706815ece38",
-        sha256 = "51c58b3c9704e439101311f74a46d97b0bc3afe2d1c53866e6a80629745cabe1",
+        strip_prefix = "yacl-0.4.5b0",
+        sha256 = "68d1dbeb255d404606d3ba9380b915fbbe3886cde575bbe89795657286742bd2",
     )
 
 def _local_sgxsdk():

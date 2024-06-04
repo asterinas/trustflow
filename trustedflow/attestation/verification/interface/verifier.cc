@@ -16,7 +16,7 @@
 
 #include "absl/strings/escaping.h"
 #include "absl/strings/match.h"
-#include "yacl/crypto/base/hash/ssl_hash.h"
+#include "yacl/crypto/hash/ssl_hash.h"
 
 namespace trustedflow {
 namespace attestation {

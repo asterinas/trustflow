@@ -29,7 +29,7 @@ trustedflow_cc_library(
         "@cppcodec",
         "@dcap//:sgx_dcap_quoteverify",
         "@yacl//yacl/base:exception",
-        "@yacl//yacl/crypto/base/hash:hash_utils",
+        "@yacl//yacl/crypto/hash:hash_utils",
         "@yacl//yacl/utils:scope_guard",
     ],
 )

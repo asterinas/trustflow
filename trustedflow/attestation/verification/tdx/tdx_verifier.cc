@@ -21,7 +21,7 @@
 #include "sgx_quote_5.h"
 #include "yacl/base/byte_container_view.h"
 #include "yacl/base/exception.h"
-#include "yacl/crypto/base/hash/ssl_hash.h"
+#include "yacl/crypto/hash/ssl_hash.h"
 
 #include "trustedflow/attestation/common/constants.h"
 #include "trustedflow/attestation/utils/json2pb.h"
