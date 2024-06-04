@@ -29,9 +29,9 @@ trustedflow_cc_library(
         "@cppcodec",
         "@trustedflow//:hygon_csv_header",
         "@yacl//yacl/base:exception",
-        "@yacl//yacl/crypto/base/hash:hash_utils",
-        "@yacl//yacl/crypto/base/hmac:hmac_sm3",
-        "@yacl//yacl/crypto/utils:rand",
+        "@yacl//yacl/crypto/hash:hash_utils",
+        "@yacl//yacl/crypto/hmac:hmac_sm3",
+        "@yacl//yacl/crypto/rand",
         "@yacl//yacl/utils:scope_guard",
     ],
 )

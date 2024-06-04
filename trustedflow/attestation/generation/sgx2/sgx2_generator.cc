@@ -30,7 +30,7 @@
 #include "sgx_report.h"
 #include "spdlog/spdlog.h"
 #include "yacl/base/exception.h"
-#include "yacl/crypto/base/hash/hash_utils.h"
+#include "yacl/crypto/hash/hash_utils.h"
 #include "yacl/utils/scope_guard.h"
 
 #include "trustedflow/attestation/collateral/intel_collateral.h"

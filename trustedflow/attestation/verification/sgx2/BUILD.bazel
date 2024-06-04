@@ -23,6 +23,7 @@ cc_library(
         "//trustedflow/attestation/verification/interface:verifier",
         "@cppcodec",
         "@dcap//:sgx_dcap_quoteverify",
-        "@yacl//yacl/crypto/base/hash:ssl_hash",
+        "@yacl//yacl/crypto/hash:ssl_hash",
     ],
 )
+

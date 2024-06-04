@@ -29,7 +29,8 @@ trustedflow_cc_library(
         "@sf_apis//:cc_sf_apis_proto",
         "@trustedflow//:hygon_csv_header",
         "@yacl//yacl/base:exception",
-        "@yacl//yacl/crypto/base:openssl_wrappers",
-        "@yacl//yacl/crypto/base/sign:sm2_signing",
+        "@yacl//yacl/crypto:openssl_wrappers",
+        "@yacl//yacl/crypto/sign:sm2_signing",
     ],
 )
+

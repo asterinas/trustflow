@@ -26,9 +26,9 @@
 #include "csv/attestation/attestation.h"
 #include "spdlog/spdlog.h"
 #include "yacl/base/exception.h"
-#include "yacl/crypto/base/hash/hash_utils.h"
-#include "yacl/crypto/base/hmac/hmac_sm3.h"
-#include "yacl/crypto/utils/rand.h"
+#include "yacl/crypto/hash/hash_utils.h"
+#include "yacl/crypto/hmac/hmac_sm3.h"
+#include "yacl/crypto/rand/rand.h"
 #include "yacl/utils/scope_guard.h"
 
 #include "trustedflow/attestation/collateral/hygon_collateral.h"

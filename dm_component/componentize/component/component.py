@@ -29,12 +29,10 @@ def clean_text(x: str, no_line_breaks: bool = True) -> str:
     return cleantext.clean(x.strip(), lower=False, no_line_breaks=no_line_breaks)
 
 
-class CompDeclError(Exception):
-    ...
+class CompDeclError(Exception): ...
 
 
-class CompEvalError(Exception):
-    ...
+class CompEvalError(Exception): ...
 
 
 class CompTracer:

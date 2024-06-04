@@ -1,11 +1,11 @@
 # Copyright 2024 Ant Group Co., Ltd.
-#
+# 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-#
+# 
 #   http://www.apache.org/licenses/LICENSE-2.0
-#
+# 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ RUN ln -sf /usr/bin/bash /bin/sh
 
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
-    tzdata \
+    tzdata \ 
     build-essential \
     ocaml \
     automake \
@@ -36,11 +36,11 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
     npm \
     git \
     debhelper \
-    zip \
+    zip \ 
     libcurl4-openssl-dev \
-    pkgconf \
-    libboost-dev \
-    libboost-system-dev \
+    pkgconf \ 
+    libboost-dev \ 
+    libboost-system-dev \ 
     libboost-thread-dev \
     protobuf-c-compiler \
     libprotobuf-c-dev \
@@ -54,7 +54,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
     rsync \
     libfuse2 \
     && rm -f /etc/ssh/ssh_host_* \
-    && apt clean
+    && apt clean 
 
 # instal protoc v3.19.4
 RUN curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protoc-3.19.4-linux-x86_64.zip \
@@ -69,7 +69,7 @@ RUN wget http://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
   && conda init
 
 
-# install bazelisk
+# install bazelisk 
 RUN npm install -g @bazel/bazelisk
 
 # install emsdk

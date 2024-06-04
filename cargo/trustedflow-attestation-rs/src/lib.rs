@@ -174,3 +174,5 @@ pub fn generate_attestation_report(params_json_str: &str) -> Result<std::string:
 
     return Ok(std::str::from_utf8(&report_buf[..(report_len as usize)])?.to_string());
 }
+
+

@@ -133,6 +133,7 @@ def eval_upload(
         # 7. upload encrypted file
         output_uri = reader.get_output_uri("receive_output")
         logging.info("##### file sending #####")
+
         # TODO: make retry scheme configurable
         @retry(
             wait=wait_exponential(multiplier=1, min=4, max=10),
@@ -301,6 +302,7 @@ def eval_data_export(
 
         # 2. download the encrytped data from sender
         logging.info("##### file downloading #####")
+
         # TODO: make retry scheme configurable
         @retry(
             wait=wait_exponential(multiplier=1, min=4, max=10),

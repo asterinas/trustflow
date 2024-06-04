@@ -29,6 +29,6 @@ trustedflow_cc_library(
         "@dcap//:sgx_dcap_quoteverify",
         "@dcap//:tdx_attest",
         "@yacl//yacl/base:exception",
-        "@yacl//yacl/crypto/base/hash:hash_utils",
+        "@yacl//yacl/crypto/hash:hash_utils",
     ],
 )
