@@ -25,8 +25,8 @@ RUN ln -sf /usr/bin/bash /bin/sh
 RUN apt update && apt install wget curl -y && apt clean
 
 # install conda
-RUN wget http://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-  && bash Miniconda3-latest-Linux-x86_64.sh -b && rm -f Miniconda3-latest-Linux-x86_64.sh \
+RUN wget http://repo.anaconda.com/miniconda/Miniconda3-py310_24.4.0-0-Linux-x86_64.sh \
+  && bash Miniconda3-py310_24.4.0-0-Linux-x86_64.sh -b && rm -f Miniconda3-py310_24.4.0-0-Linux-x86_64.sh \
   && ln -sf /root/miniconda3/bin/conda /usr/bin/conda \
   && conda init
 
