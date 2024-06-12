@@ -139,7 +139,7 @@ def _com_gitee_hygon_csv_header():
     maybe(
         http_file,
         name = "hygon_csv_header",
-        url = "https://gitee.com/anolis/hygon-devkit/raw/master/csv/attestation/attestation.h",
+        url = "https://gitee.com/anolis/hygon-devkit/raw/2683fd4577a1d2e0fc19247b47a6ca68f4879c33/csv/attestation/attestation.h",
         downloaded_file_path = "csv/attestation/attestation.h",
     )
 
