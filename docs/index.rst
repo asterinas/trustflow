@@ -47,6 +47,9 @@ TrustedFlow保护了数据使用中（data-in-use）、数据存储（data-at-re
 2. `授权策略 <architecture/policy>`_
 3. `可信应用 <architecture/apps/index>`_
 
+自定义可信组件
+---------------
+开发新的自定义可信组件，欢迎阅读 `新组件开发教程 <development/new_component>`_ 。
 
 高阶话题
 -----------
@@ -72,4 +75,5 @@ TrustedFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/
 
    quick_start/index
    architecture/index
+   development/index
    advanced_topic/index

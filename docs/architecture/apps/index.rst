@@ -31,6 +31,8 @@ TrustedFlow内置了多种可信APP，每一个可信APP在执行计算逻辑之
    lr_train
    xgb_predict
    lr_predict
+   lgbm_train
+   lgbm_predict
    binary_evaluation
    prediction_bias_eval
 
