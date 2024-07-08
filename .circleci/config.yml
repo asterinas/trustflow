@@ -127,7 +127,6 @@ jobs:
                 docker tag secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:latest
                 docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
                 docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:latest
-                doker push 
                 popd
                 ;;
               *)
