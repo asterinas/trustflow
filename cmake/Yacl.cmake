@@ -2,8 +2,7 @@ include(FetchContent)
 
 FetchContent_Declare(
   yacl
-  GIT_REPOSITORY https://github.com/secretflow/yacl.git
-  GIT_TAG c45fb48dff630a286953bc21bfae5e7d083ae422)
+  URL https://github.com/secretflow/yacl/archive/refs/tags/0.4.5b0.tar.gz)
 
 FetchContent_GetProperties(yacl)
 if(NOT yacl_POPULATED)
@@ -19,7 +18,6 @@ if(NOT yacl_POPULATED)
   target_link_libraries(yacl_buffer PUBLIC yacl_exception)
 
   add_library(yacl_crypto STATIC
-              ${yacl_SOURCE_DIR}/yacl/crypto/base/hash/ssl_hash.cc)
-  add_dependencies(yacl_crypto openssl)
-  target_link_libraries(yacl_crypto PUBLIC yacl_buffer libopenssl)
+              ${yacl_SOURCE_DIR}/yacl/crypto/hash/ssl_hash.cc)
+  target_link_libraries(yacl_crypto PUBLIC yacl_buffer OpenSSL::Crypto)
 endif()

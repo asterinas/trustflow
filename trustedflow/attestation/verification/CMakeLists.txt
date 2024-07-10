@@ -1,3 +1,5 @@
+if(WASM)
+
 set(SOURCES wasm_binding.cc)
 
 add_subdirectory(interface)
@@ -27,3 +29,5 @@ set_target_properties(
   PROPERTIES COMPILE_FLAGS ${WASM_MAIN_BASE_FLAGS}
              LINK_FLAGS "${WASM_MAIN_ASYNC_FLAGS}"
              SUFFIX ".js")
+
+endif()
