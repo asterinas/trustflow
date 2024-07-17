@@ -96,10 +96,10 @@ else()
     PREFIX ${LIBDCAP_ROOT}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND
-      cd ${LIBDCAP_SRC_PATH} &&  make GEN_STATIC=1 GEN_DYNAMIC=0 WASM=1 -C
+      cd ${LIBDCAP_SRC_PATH} &&  make GEN_STATIC=1 GEN_DYNAMIC=0 -C
       QuoteGeneration/qcnl/linux &&  make GEN_STATIC=1 GEN_DYNAMIC=0
-      WASM=1 -C QuoteGeneration/qpl/linux &&  make GEN_STATIC=1
-      GEN_DYNAMIC=0 WASM=1 -C QuoteVerification/dcap_quoteverify/linux
+       -C QuoteGeneration/qpl/linux &&  make GEN_STATIC=1
+      GEN_DYNAMIC=0  -C QuoteVerification/dcap_quoteverify/linux
     INSTALL_COMMAND "")
 
   add_library(dcap::qcnl STATIC IMPORTED)

@@ -6,7 +6,7 @@ find_program(SED_EXECUTEABLE NAMES sed)
 
 file(
   DOWNLOAD
-  https://gitee.com/anolis/hygon-devkit/raw/master/csv/attestation/attestation.h
+  https://gitee.com/anolis/hygon-devkit/raw/2683fd4577a1d2e0fc19247b47a6ca68f4879c33/csv/attestation/attestation.h
   ${CSV_HEADER_FILE_PATH})
 
 execute_process(COMMAND ${SED_EXECUTEABLE} -i "/ioctl.h/ d"

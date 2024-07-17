@@ -1,12 +1,12 @@
-if(WASM)
-
-set(SOURCES wasm_binding.cc)
-
 add_subdirectory(interface)
 add_subdirectory(sgx2)
 add_subdirectory(tdx)
 add_subdirectory(csv)
 add_subdirectory(wrapper)
+
+if(WASM)
+
+set(SOURCES wasm_binding.cc)
 
 add_executable(trustedflow_verifier ${SOURCES})
 target_link_libraries(trustedflow_verifier PUBLIC verifier_wrapper)
@@ -22,7 +22,7 @@ set(WASM_MAIN_ASYNC_FLAGS
     "${WASM_MAIN_NORMAL_FLAGS} -gsource-map -sASYNCIFY -sASYNCIFY_IMPORTS=['dcap_fetch_proxy'] -sSINGLE_FILE -s EXPORT_ES6=1 -s MODULARIZE=1"
 )
 
-target_link_libraries(trustedflow_verifier PUBLIC libopenssl absl::type_traits
+target_link_libraries(trustedflow_verifier PUBLIC OpenSSL::Crypto absl::type_traits
                                           absl::symbolize spdlog::spdlog)
 set_target_properties(
     trustedflow_verifier

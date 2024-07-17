@@ -8,17 +8,23 @@ set(BUILD_MODE
 # Print build mode
 message(STATUS "Build Mode: ${BUILD_MODE}")
 
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 if(BUILD_MODE STREQUAL "wasm")
   set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Emscripten.cmake")
-  set(CMAKE_POSITION_INDEPENDENT_CODE ON)
   set(WASM 1)
   add_definitions(-DWASM)
   SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -sMAIN_MODULE=2 -fPIC -fexceptions -O3")
+elseif()
+
 endif()
 
 project(trustedflow)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -33,7 +39,9 @@ include(SgxHeaders)
 include(Yacl)
 include(Spdlog)
 include(CsvHeader)
+# include(Pybind)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(trustedflow/attestation/verification)
+add_subdirectory(pylib/trustedflow/attestation/verification)
