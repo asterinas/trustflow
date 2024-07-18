@@ -1,0 +1,13 @@
+diff --git a/QuoteVerification/dcap_quoteverify/linux/Makefile b/QuoteVerification/dcap_quoteverify/linux/Makefile
+index 5e9327c..53e9608 100644
+--- a/QuoteVerification/dcap_quoteverify/linux/Makefile
++++ b/QuoteVerification/dcap_quoteverify/linux/Makefile
+@@ -35,7 +35,7 @@ include ../../buildenv.mk
+ INSTALL_PATH 		?= /usr/lib/x86_64-linux-gnu
+ QVE_SRC_PATH		:= $(DCAP_QV_DIR)/QvE
+ 
+-QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include
++QVL_LIB_INC		+= -I$(PREBUILD_OPENSSL_PATH)/inc -I$(QVE_SRC_PATH)/Include -I$(DCAP_QG_DIR)/qpl/inc
+ QVL_PARSER_INC  += -I$(PREBUILD_OPENSSL_PATH)/inc
+ QVL_VERIFY_INC	:= -I$(QVE_SRC_PATH)/Include \
+ 				   -I../inc \

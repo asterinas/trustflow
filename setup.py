@@ -119,7 +119,7 @@ class CMakeBuild(build_ext.build_ext):
         # EXAMPLE_VERSION_INFO shows you how to pass a value into the C++ code
         # from Python.
         cmake_args = [
-            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}",
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}{os.sep}/trustedflow/attestation/verification",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DCMAKE_BUILD_TYPE={cfg}",  # not used on MSVC, but no harm
             "-DBUILD_MODE=host"
@@ -252,6 +252,10 @@ def build_verifier():
         long_description_content_type="text/markdown",
         long_description="An attestation report verification library",
         license="Apache 2.0",
+        packages=["trustedflow/attestation/verification"],
+        package_data={
+            "": ["*.so"],
+        },
         install_requires=read("requirements.txt"),
         ext_modules=[CMakeExtension("verifier")],
         cmdclass=dict(build_ext=CMakeBuild),

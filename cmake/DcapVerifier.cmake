@@ -92,7 +92,7 @@ else()
   ExternalProject_Add(
     dcap
     URL https://github.com/intel/SGXDataCenterAttestationPrimitives/archive/refs/tags/DCAP_1.19.tar.gz
-    PATCH_COMMAND patch -p1 < ${CMAKE_CURRENT_LIST_DIR}/patch/dcap.patch
+    PATCH_COMMAND patch -p1 < ${CMAKE_CURRENT_LIST_DIR}/patch/dcap2.patch
     PREFIX ${LIBDCAP_ROOT}
     CONFIGURE_COMMAND ""
     BUILD_COMMAND
