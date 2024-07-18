@@ -129,6 +129,7 @@ jobs:
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
             
+            which protoc
             pip install -r dev-requirements.txt
 
             # verification package
