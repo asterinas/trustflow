@@ -16,7 +16,7 @@
 #
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-image=docker.awsl9527.cn/secretflow/trustedflow-dev-ubuntu22.04:latest
+image=secretflow/trustedflow-dev-ubuntu22.04:latest
 DOCKER=docker
 project=trustedflow
 if [[ $1 == 'enter' ]]; then

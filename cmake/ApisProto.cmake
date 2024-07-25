@@ -13,7 +13,7 @@ if(NOT apis_proto_POPULATED)
   set(IMPORT_DIRS ${apis_proto_SOURCE_DIR})
   set(PROTOC_OUT_DIR ${apis_proto_BINARY_DIR}/generated)
   file(GLOB UAL_PROTOS ${apis_proto_SOURCE_DIR}/secretflowapis/v2/sdc/ual.proto)
-  set(PROTOBUF_PROTOC_EXECUTABLE /root/.local/bin/protoc)
+  set(PROTOBUF_PROTOC_EXECUTABLE protoc)
   make_directory(${PROTOC_OUT_DIR})
 
   foreach(proto ${UAL_PROTOS})
