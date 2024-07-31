@@ -1,6 +1,6 @@
 # Trustedflow Attestation Library
 
-Trustedflow Attestation Library provides the ability to generate and verify remote attestation reports for different TEE hardware devices. Currently, it supports Intel SGX2, Intel TDX, and Hygon CSV.
+Trustedflow Attestation Library provides the ability to generate and verify remote attestation reports for different TEE hardware devices. Currently, it supports Intel SGX2, Intel TDX and Hygon CSV.
 
 ## Build
 
@@ -11,7 +11,7 @@ Bazel supports building the generation and verification modules for the Linux pl
 ```
 bazel build //trustedflow/attestation/verification/wrapper:libverification.so -c opt
 ```
-The generated path for libverification.so is：`bazel-bin/trustedflow/attestation/verification/wrapper/libverification.so`
+The generated path for libverification.so is `bazel-bin/trustedflow/attestation/verification/wrapper/libverification.so`
 
 **Compiling the generation module**
 
@@ -27,7 +27,7 @@ For example, Intel TDX：
 ```
 bazel build --define tee_type=tdx //trustedflow/attestation/generation/wrapper:libgeneration.so -c opt
 ```
-The generated path for libgeneration.so is: `bazel-bin/trustedflow/attestation/generation/wrapper/libgeneration.so`
+The generated path for libgeneration.so is `bazel-bin/trustedflow/attestation/generation/wrapper/libgeneration.so`
 
 ### CMake
 CMake currently only supports compiling the verification module using WebAssembly to enable remote attestation execution on the Web.
@@ -35,7 +35,7 @@ CMake currently only supports compiling the verification module using WebAssembl
 cmake -H. -Bbuild
 cd build && make
 ```
-The generated JS file path is：`trustedflow/attestation/verification/trustedflow_verifier.js`
+The generated JS file path is `trustedflow/attestation/verification/trustedflow_verifier.js`
 For sample code using this JS file, refer to [here](sample/verification/wasm/sample_react_app/README.md)
 
 ## Multi-Language Support
