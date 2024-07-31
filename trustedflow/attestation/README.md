@@ -1,43 +1,43 @@
 # Trustedflow Attestation Library
 
-Trustedflow Attestation Library 为不同类型的可信硬件设备提供生成和验证远程认证报告的功能。目前，支持 Intel SGX2、Intel TDX 以及 Hygon CSV。
+Trustedflow Attestation Library provides the ability to generate and verify remote attestation reports for different TEE hardware devices. Currently, it supports Intel SGX2, Intel TDX and Hygon CSV.
 
 ## Build
 
 ### Bazel
-Bazel 支持构建 Linux 平台的 generation 和 verification 模块。
+Bazel supports building the generation and verification modules for the Linux platform.
 
-**verification 模块编译**
+**Compiling the verification module**
 ```
 bazel build //trustedflow/attestation/verification/wrapper:libverification.so -c opt
 ```
-libverification.so 生成路径为：`bazel-bin/trustedflow/attestation/verification/wrapper/libverification.so`
+The generated path for libverification.so is `bazel-bin/trustedflow/attestation/verification/wrapper/libverification.so`
 
-**generation 模块编译**
+**Compiling the generation module**
 
-因为generation 需要与特定 TEE 平台绑定，所以在编译时需要制定平台类型：
+Because the generation needs to be bound to a specific TEE platform, you need to specify the platform type when compiling:
 
-Intel SGX2 并使用 occlum 运行： `--define tee_type=sgx2`
+Intel SGX2 and running with Occlum: `--define tee_type=sgx2`
 
 Intel TDX: `--define tee_type=tdx`
 
 Hygon CSV: `--define tee_type=csv`
 
-例如 Intel TDX：
+For example, Intel TDX：
 ```
 bazel build --define tee_type=tdx //trustedflow/attestation/generation/wrapper:libgeneration.so -c opt
 ```
-libgeneration.so 生成路径为：`bazel-bin/trustedflow/attestation/generation/wrapper/libgeneration.so`
+The generated path for libgeneration.so is `bazel-bin/trustedflow/attestation/generation/wrapper/libgeneration.so`
 
 ### CMake
-CMake 目前仅支持使用 WebAssembly 编译 verification 模块的能力，用于支持在 Web 上执行远程认证。
+CMake currently only supports compiling the verification module using WebAssembly to enable remote attestation execution on the Web.
 ```
 cmake -H. -Bbuild
 cd build && make
 ```
-生成的 JS 文件路径为：`trustedflow/attestation/verification/trustedflow_verifier.js`
-使用该 JS 的sample code 参考[这里](sample/verification/wasm/sample_react_app/README.md)
+The generated JS file path is `trustedflow/attestation/verification/trustedflow_verifier.js`
+For sample code using this JS file, refer to [here](sample/verification/wasm/sample_react_app/README.md)
 
-## 多语言支持
+## Multi-Language Support
 
-目前支持 C/C++、Python、Rust
+Currently supports C/C++, Python, Rust
