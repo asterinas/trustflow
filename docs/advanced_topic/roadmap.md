@@ -23,4 +23,4 @@
 
 ## 路线图
 
-![roadmap](../images/tee_roadmap.png)
+![roadmap](../images/tee_roadmap.jpg)

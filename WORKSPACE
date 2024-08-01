@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-workspace(name = "trustedflow")
+workspace(name = "trustflow")
 
-load("//bazel:repositories.bzl", "trustedflow_dependencies")
+load("//bazel:repositories.bzl", "trustflow_dependencies")
 
-trustedflow_dependencies()
+trustflow_dependencies()
 
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 

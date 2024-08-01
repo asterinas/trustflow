@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: TrustedFlow Issue Template
+name: TrustFlow Issue Template
 description: Thank you for reporting the issue!
 body:
   - type: dropdown
@@ -34,7 +34,7 @@ body:
     id: source
     attributes:
       label: Source
-      description: TrustedFlow installed from
+      description: TrustFlow installed from
       options:
         - binary
         - source

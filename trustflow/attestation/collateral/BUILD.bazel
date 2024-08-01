@@ -1,0 +1,49 @@
+# Copyright 2024 Ant Group Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library", "trustflow_cc_test")
+
+package(default_visibility = ["//visibility:public"])
+
+trustflow_cc_library(
+    name = "intel_collateral",
+    srcs = ["intel_collateral.cc"],
+    hdrs = ["intel_collateral.h"],
+    deps = [
+        "//trustflow/attestation/utils:json2pb",
+        "@dcap//:sgx_dcap_quoteverify",
+        "@sf_apis//:cc_sf_apis_proto",
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+trustflow_cc_library(
+    name = "hygon_collateral",
+    srcs = ["hygon_collateral.cc"],
+    hdrs = ["hygon_collateral.h"],
+    deps = [
+        "//trustflow/attestation/utils:json2pb",
+        "@com_github_httplib//:httplib",
+        "@cppcodec",
+        "@sf_apis//:cc_sf_apis_proto",
+        "@trustflow//:hygon_csv_header",
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+trustflow_cc_test(
+    name = "hygon_collateral_test",
+    srcs = ["hygon_collateral_test.cc"],
+    deps = [":hygon_collateral"],
+)

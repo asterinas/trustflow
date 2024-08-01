@@ -17,6 +17,7 @@ if(NOT apis_proto_POPULATED)
   make_directory(${PROTOC_OUT_DIR})
 
   foreach(proto ${UAL_PROTOS})
+    message("STATUS ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${IMPORT_DIRS} --cpp_out=${PROTOC_OUT_DIR} ${proto}")
     execute_process(
       COMMAND ${PROTOBUF_PROTOC_EXECUTABLE} --proto_path=${IMPORT_DIRS}
               --cpp_out=${PROTOC_OUT_DIR} ${proto} RESULT_VARIABLE rv)

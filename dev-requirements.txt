@@ -1,2 +1,3 @@
 -r requirements.txt
 twine
+pybind11-global

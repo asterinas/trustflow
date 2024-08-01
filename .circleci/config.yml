@@ -45,7 +45,7 @@ jobs:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
-      - image: secretflow/trustedflow-dev-ubuntu22.04:latest
+      - image: secretflow/trustflow-dev-ubuntu22.04:latest
     resource_class: 2xlarge+
     shell: /bin/bash --login -eo pipefail
     # Add steps to the job
@@ -57,9 +57,9 @@ jobs:
           command: |
             set -ex
             mkdir -p ~/.ssh && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-            bazel --output_base=target build //trustedflow/...
-            bazel --output_base=target test //trustedflow/...
-            bazel --output_base=target test //trustedflow/... --features=asan
+            bazel --output_base=target build //trustflow/...
+            bazel --output_base=target test //trustflow/...
+            bazel --output_base=target test //trustflow/... --features=asan
   docker_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1
@@ -84,49 +84,49 @@ jobs:
               common)
                 echo "build and publish in common mode, version: ${COMMON_VERSION}"
                 pushd docker
-                docker build -f trustedflow-dev-ubuntu22.04.Dockerfile -t secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION} .
-                docker tag secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow/trustedflow-dev-ubuntu22.04:latest
-                docker push secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION}
-                docker push secretflow/trustedflow-dev-ubuntu22.04:latest
+                docker build -f trustflow-dev-ubuntu22.04.Dockerfile -t secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION} .
+                docker tag secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow/trustflow-dev-ubuntu22.04:latest
+                docker push secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION}
+                docker push secretflow/trustflow-dev-ubuntu22.04:latest
                 # push to aliyun
-                docker tag secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION}
-                docker tag secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-ubuntu22.04:latest
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-ubuntu22.04:${COMMON_VERSION}
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-ubuntu22.04:latest
+                docker tag secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION}
+                docker tag secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-ubuntu22.04:latest
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-ubuntu22.04:${COMMON_VERSION}
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-ubuntu22.04:latest
 
-                docker build -f trustedflow-release-ubuntu22.04.Dockerfile -t secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION} .
-                docker tag secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION} secretflow/trustedflow-release-ubuntu22.04:latest
-                docker push secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION}
-                docker push secretflow/trustedflow-release-ubuntu22.04:latest
+                docker build -f trustflow-release-ubuntu22.04.Dockerfile -t secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION} .
+                docker tag secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION} secretflow/trustflow-release-ubuntu22.04:latest
+                docker push secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION}
+                docker push secretflow/trustflow-release-ubuntu22.04:latest
                 # push to aliyun
-                docker tag secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION}
-                docker tag secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-ubuntu22.04:latest
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-ubuntu22.04:${COMMON_VERSION}
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-ubuntu22.04:latest
+                docker tag secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION}
+                docker tag secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-ubuntu22.04:latest
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-ubuntu22.04:${COMMON_VERSION}
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-ubuntu22.04:latest
                 popd
                 ;;
               occlum)
                 echo "build and publish in occlum mode, version: ${OCCLUM_VERSION}"
                 pushd docker
-                docker build -f trustedflow-dev-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} .
-                docker tag secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
-                docker push secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
-                docker push secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
+                docker build -f trustflow-dev-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} .
+                docker tag secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustflow-dev-occlum-ubuntu22.04:latest
+                docker push secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow/trustflow-dev-occlum-ubuntu22.04:latest
                 # push to aliyun
-                docker tag secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
-                docker tag secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-dev-occlum-ubuntu22.04:latest
+                docker tag secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker tag secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-occlum-ubuntu22.04:latest
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-dev-occlum-ubuntu22.04:latest
 
-                docker build -f trustedflow-release-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} .
-                docker tag secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustedflow-release-occlum-ubuntu22.04:latest
-                docker push secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
-                docker push secretflow/trustedflow-release-occlum-ubuntu22.04:latest
+                docker build -f trustflow-release-ubuntu22.04.Dockerfile --build-arg BASE_IMAGE=${OCCLUM_BASE_IMAGE} -t secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} .
+                docker tag secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow/trustflow-release-occlum-ubuntu22.04:latest
+                docker push secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow/trustflow-release-occlum-ubuntu22.04:latest
                 # push to aliyun
-                docker tag secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} 
-                docker tag secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:latest
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
-                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustedflow-release-occlum-ubuntu22.04:latest
+                docker tag secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} 
+                docker tag secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION} secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-occlum-ubuntu22.04:latest
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-occlum-ubuntu22.04:${OCCLUM_VERSION}
+                docker push secretflow-registry.cn-hangzhou.cr.aliyuncs.com/secretflow/trustflow-release-occlum-ubuntu22.04:latest
                 popd
                 ;;
               *)
@@ -136,7 +136,7 @@ jobs:
             esac
   pypi_publish:
     docker:
-      - image: secretflow/trustedflow-dev-ubuntu22.04:latest
+      - image: secretflow/trustflow-dev-ubuntu22.04:latest
     resource_class: 2xlarge+
     parameters:
       python_ver:
@@ -148,6 +148,8 @@ jobs:
           name: "build package and publish"
           command: |
             source /root/miniconda3/etc/profile.d/conda.sh
+            source /root/.bashrc
+            which protoc
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
             
@@ -176,7 +178,7 @@ jobs:
 
   wasm_verifier_publish:
     docker:
-      - image: secretflow/trustedflow-dev-ubuntu22.04:latest
+      - image: secretflow/trustflow-dev-ubuntu22.04:latest
     resource_class: 2xlarge+
     steps:
       - checkout
@@ -195,7 +197,7 @@ jobs:
             cd ..
             ghr -t "${GITHUB_TOKEN}" -u "${CIRCLE_PROJECT_USERNAME}" \
                 -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" "${VERSION}" \
-                build/trustedflow/attestation/verification/trustedflow_verifier.js
+                build/trustflow/attestation/verification/trustflow_verifier.js
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

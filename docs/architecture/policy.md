@@ -1,6 +1,6 @@
 # 授权策略
 
-TrustedFlow提供了一套简洁易懂的语法帮助用户对数据使用行为的授权进行描述。接下来我们会详细描述这套语法，并结合示例进行讲解。
+TrustFlow提供了一套简洁易懂的语法帮助用户对数据使用行为的授权进行描述。接下来我们会详细描述这套语法，并结合示例进行讲解。
 
 ## 授权策略概览
 
@@ -14,7 +14,7 @@ TrustedFlow提供了一套简洁易懂的语法帮助用户对数据使用行为
 constraint本质上是描述“访问控制”这件事，比如允许对数据进行什么样的计算。
 
 ### 可限制的元信息
-constraint支持对以下元信息进行限制。具体语法上，每一条constraint的元素都是以`r.`作为开头。（TrustedFlow采用了[casbin](https://github.com/casbin/casbin)作为底层的访问控制实现）
+constraint支持对以下元信息进行限制。具体语法上，每一条constraint的元素都是以`r.`作为开头。（TrustFlow采用了[casbin](https://github.com/casbin/casbin)作为底层的访问控制实现）
 
 #### platform
 在[global_constraints](#global_constraints)下设置。
@@ -56,7 +56,7 @@ r.op.params.reg_type=="logistic"
 
 ### 元素之间支持的操作符
 
-用户可以根据需要对元信息进行操作，TrustedFlow支持的操符作如下。
+用户可以根据需要对元信息进行操作，TrustFlow支持的操符作如下。
 
 ![constraint_op](../images/constraint_op.jpg)
 

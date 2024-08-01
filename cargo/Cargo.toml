@@ -1,7 +1,7 @@
 [workspace]
 
 members = [
-    "trustedflow-attestation-generator",
-    "trustedflow-attestation-sys",
-    "trustedflow-attestation-rs"
+    "trustflow-attestation-generator",
+    "trustflow-attestation-sys",
+    "trustflow-attestation-rs"
 ]

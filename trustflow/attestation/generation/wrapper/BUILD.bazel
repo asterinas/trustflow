@@ -1,0 +1,76 @@
+# Copyright 2024 Ant Group Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+config_setting(
+    name = "sgx2",
+    values = {"define": "tee_type=sgx2"},
+)
+
+config_setting(
+    name = "csv",
+    values = {"define": "tee_type=csv"},
+)
+
+config_setting(
+    name = "tdx",
+    values = {"define": "tee_type=tdx"},
+)
+
+trustflow_cc_library(
+    name = "generator_wrapper",
+    srcs = ["generator_wrapper.cc"],
+    hdrs = ["generator_wrapper.h"],
+    copts = select({
+        ":sgx2": ["-DTEE_TYPE_SGX2"],
+        ":tdx": ["-DTEE_TYPE_TDX"],
+        ":csv": ["-DTEE_TYPE_CSV"],
+        "//conditions:default": [],
+    }),
+    deps = select({
+        ":sgx2": ["//trustflow/attestation/generation/sgx2:sgx2_generator"],
+        ":tdx": ["//trustflow/attestation/generation/tdx:tdx_generator"],
+        ":csv": ["//trustflow/attestation/generation/csv:csv_generator"],
+        "//conditions:default": [],
+    }) + [
+        "//trustflow/attestation/common:constants",
+        "//trustflow/attestation/common:status",
+        "//trustflow/attestation/generation/interface:generator",
+        "//trustflow/attestation/utils:json2pb",
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+trustflow_cc_library(
+    name = "generator_wrapper_c_api",
+    srcs = ["generator_wrapper_c_api.cc"],
+    hdrs = ["generator_wrapper_c_api.h"],
+    deps = [
+        ":generator_wrapper",
+    ],
+)
+
+cc_binary(
+    name = "libgeneration.so",
+    srcs = [
+        "generator_wrapper_c_api.cc",
+    ],
+    linkshared = True,
+    deps = [
+        ":generator_wrapper_c_api",
+    ],
+)

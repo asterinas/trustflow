@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-bazel --output_base=target build //trustedflow/... -c opt --repository_cache=/tmp/bazel_repo_cache --remote_download_minimal 
+bazel --output_base=target build //trustflow/... -c opt --repository_cache=/tmp/bazel_repo_cache --remote_download_minimal 
