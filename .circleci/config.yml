@@ -149,6 +149,7 @@ jobs:
           command: |
             source /root/miniconda3/etc/profile.d/conda.sh
             source /root/.bashrc
+            export PATH="/root/.local/bin:$PATH"
             which protoc
             conda create -n build python=<< parameters.python_ver >> -y
             conda activate build
