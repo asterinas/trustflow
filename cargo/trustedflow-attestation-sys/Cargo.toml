@@ -1,8 +1,0 @@
-[package]
-name = "trustedflow-attestation-sys"
-version = "0.2.0-dev240313"
-edition = "2021"
-description = "Trustedflow Attestation Rust Library"
-repository = "https://github.com/secretflow/trustedflow.git"
-license = "Apache-2.0"
-include = ["lib.rs", "bindings.rs", "build.rs"]

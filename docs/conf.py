@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "TrustedFlow"
+project = "TrustFlow"
 copyright = "2023 Ant Group Co., Ltd."
 author = "SecretFlow authors"
 
@@ -33,13 +33,13 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/secretflow/trustedflow",
+            "url": "https://github.com/asterinas/trustflow",
             "icon": "fab fa-github-square",
             "type": "fontawesome",
         },
     ],
     "logo": {
-        "text": "TrustedFlow",
+        "text": "TrustFlow",
     },
     "show_nav_level": 4,
 }

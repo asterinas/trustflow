@@ -1,6 +1,6 @@
 可信APP
 ========================
-TrustedFlow内置了多种可信APP，每一个可信APP在执行计算逻辑之前，会先向CapsuleManager请求数据密钥，具体流程如下图所示。
+TrustFlow内置了多种可信APP，每一个可信APP在执行计算逻辑之前，会先向CapsuleManager请求数据密钥，具体流程如下图所示。
 
 .. image:: ../../images/tee_app.png
 

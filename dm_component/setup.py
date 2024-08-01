@@ -83,7 +83,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     long_description="TEE data management component",
     license="Apache 2.0",
-    url="https://github.com/secretflow/trustflow",
+    url="https://github.com/asterinas/trustflow",
     packages=setuptools.find_namespace_packages(exclude=("tests", "tests.*")),
     install_requires=read("requirements.txt"),
     ext_modules=[

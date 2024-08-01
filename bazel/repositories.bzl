@@ -19,9 +19,9 @@ This module contains build rules for project dependencies.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
-def trustedflow_dependencies():
+def trustflow_dependencies():
     """
-    trustedflow deps
+    trustflow deps
     """
     _local_openssl_openssl()
 
@@ -49,7 +49,7 @@ def _local_openssl_openssl():
     maybe(
         native.new_local_repository,
         name = "com_github_openssl_openssl",
-        build_file = "@trustedflow//bazel:openssl.BUILD",
+        build_file = "@trustflow//bazel:openssl.BUILD",
         path = "/",
     )
 
@@ -62,7 +62,7 @@ def _com_github_grpc_grpc():
         type = "tar.gz",
         patch_args = ["-p1"],
         # Set grpc to use local go toolchain
-        patches = ["@trustedflow//bazel:patches/grpc.patch"],
+        patches = ["@trustflow//bazel:patches/grpc.patch"],
         urls = [
             "https://github.com/grpc/grpc/archive/refs/tags/v1.50.1.tar.gz",
         ],
@@ -88,7 +88,7 @@ def _com_github_sf_apis():
             "https://github.com/secretflow/secure-data-capsule-apis/archive/47a47f0f0096fdcc2c13c8ba3b86448d2795b829.tar.gz",
         ],
         strip_prefix = "secure-data-capsule-apis-47a47f0f0096fdcc2c13c8ba3b86448d2795b829",
-        build_file = "@trustedflow//bazel:sf_apis.BUILD",
+        build_file = "@trustflow//bazel:sf_apis.BUILD",
         sha256 = "c7b52eb51be3b4f1f380b8fb7cdd80a101e59e9471ca01d7b6c3441bd463dc3b",
     )
 
@@ -96,7 +96,7 @@ def _com_github_cppcodec():
     maybe(
         http_archive,
         name = "cppcodec",
-        build_file = "@trustedflow//bazel:cppcodec.BUILD",
+        build_file = "@trustflow//bazel:cppcodec.BUILD",
         urls = [
             "https://github.com/tplgy/cppcodec/archive/refs/tags/v0.2.tar.gz",
         ],
@@ -119,7 +119,7 @@ def _local_sgxsdk():
     maybe(
         native.new_local_repository,
         name = "sgxsdk",
-        build_file = "@trustedflow//bazel:sgxsdk.BUILD",
+        build_file = "@trustflow//bazel:sgxsdk.BUILD",
         path = "/opt/intel/sgxsdk",
     )
 
@@ -130,7 +130,7 @@ def _com_github_dcap():
         urls = [
             "https://github.com/intel/SGXDataCenterAttestationPrimitives/archive/refs/tags/DCAP_1.20.tar.gz",
         ],
-        build_file = "@trustedflow//bazel:dcap.BUILD",
+        build_file = "@trustflow//bazel:dcap.BUILD",
         strip_prefix = "SGXDataCenterAttestationPrimitives-DCAP_1.20",
         sha256 = "a71bba80f8da53ce2877f4c2bd2d1713ab97acc4a3e7987d82d7430cda2d8fb1",
     )
@@ -149,7 +149,7 @@ def _com_github_httplib():
         name = "com_github_httplib",
         sha256 = "e620d030215733c4831fdc7813d5eb37a6fd599f8192a730662662e1748a741b",
         strip_prefix = "cpp-httplib-0.11.2",
-        build_file = "@trustedflow//bazel:httplib.BUILD",
+        build_file = "@trustflow//bazel:httplib.BUILD",
         type = "tar.gz",
         urls = [
             "https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.11.2.tar.gz",

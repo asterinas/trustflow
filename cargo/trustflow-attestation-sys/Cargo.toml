@@ -1,0 +1,8 @@
+[package]
+name = "trustflow-attestation-sys"
+version = "0.3.1-dev20240726"
+edition = "2021"
+description = "TrustFlow Attestation Rust Library"
+repository = "https://github.com/asterinas/trustflow.git"
+license = "Apache-2.0"
+include = ["lib.rs", "bindings.rs", "build.rs"]

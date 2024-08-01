@@ -1,0 +1,50 @@
+# Copyright 2024 Ant Group Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "verifier_wrapper",
+    srcs = ["verifier_wrapper.cc"],
+    hdrs = ["verifier_wrapper.h"],
+    deps = [
+        "//trustflow/attestation/common:status",
+        "//trustflow/attestation/verification:verifier_factory",
+        "//trustflow/attestation/verification/csv:csv_verifier",
+        "//trustflow/attestation/verification/sgx2:sgx2_verifier",
+        "//trustflow/attestation/verification/tdx:tdx_verifier",
+    ],
+)
+
+cc_library(
+    name = "verifier_wrapper_c_api",
+    srcs = ["verifier_wrapper_c_api.cc"],
+    hdrs = ["verifier_wrapper_c_api.h"],
+    deps = [
+        "//trustflow/attestation/common:status",
+        "//trustflow/attestation/verification:verifier_factory",
+        "//trustflow/attestation/verification/csv:csv_verifier",
+        "//trustflow/attestation/verification/sgx2:sgx2_verifier",
+        "//trustflow/attestation/verification/tdx:tdx_verifier",
+    ],
+)
+
+cc_binary(
+    name = "libverification.so",
+    srcs = ["verifier_wrapper_c_api.cc"],
+    linkshared = True,
+    deps = [
+        ":verifier_wrapper_c_api",
+    ],
+)

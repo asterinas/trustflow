@@ -1,8 +1,8 @@
-# TrustedFlow原理
+# TrustFlow原理
 
-TrustedFlow的核心原理如下图所示。主要流程描述如下。
+TrustFlow的核心原理如下图所示。主要流程描述如下。
 
-1. 数据持有方（图中以alice和bob为例）对[CapsuleManager](https://github.com/secretflow/capsule-manager)（运行在TEE中）进行远程认证，确认CapsuleManager被正确部署在TEE环境中，且代码未被篡改。CapsuleManager的公钥会随着远程认证报告一起返回给数据持有方。
+1. 数据持有方（图中以alice和bob为例）对[CapsuleManager](https://github.com/asterinas/trustflow-capsule-manager)（运行在TEE中）进行远程认证，确认CapsuleManager被正确部署在TEE环境中，且代码未被篡改。CapsuleManager的公钥会随着远程认证报告一起返回给数据持有方。
 
 2. 数据持有方生成数据加密密钥，对数据进行加密，并且使用CapsuleManager的公钥对加密密钥进行加密。
 
@@ -24,4 +24,4 @@ TrustedFlow的核心原理如下图所示。主要流程描述如下。
 
 7. 可信APP使用私钥解密得到数据加密密钥，继而解密得到明文数据，并按照预设的计算逻辑对数据进行计算。
 
-![principle.png](../images/trustedflow_principle.png)
+![principle.png](../images/trustflow_principle.png)
