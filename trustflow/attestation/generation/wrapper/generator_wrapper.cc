@@ -28,6 +28,10 @@
 #include "trustflow/attestation/generation/csv/csv_generator.h"
 #endif
 
+#ifdef TEE_TYPE_HYPER
+#include "trustflow/attestation/generation/hyperenclave/hyperenclave_generator.h"
+#endif
+
 namespace trustflow {
 namespace attestation {
 namespace generation {
@@ -43,6 +47,10 @@ std::unique_ptr<AttestationGenerator> CreateAttestationGenerator() {
 
 #ifdef TEE_TYPE_CSV
   return std::make_unique<CsvAttestationGenerator>();
+#endif
+
+#ifdef TEE_TYPE_HYPER
+  return std::make_unique<HyperenclaveAttestationGenerator>();
 #endif
 
   YACL_THROW("Unsupported TEE type!");

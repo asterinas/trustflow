@@ -24,7 +24,7 @@ TrustFlow可用于需要安全存储、处理或共享敏感数据的场景，�
 
 - [CapsuleManager](https://github.com/asterinas/trustflow-capsule-manager): 授权和密钥管理模块。
 - [TEEAPPs](https://github.com/asterinas/trustflow-teeapps): 可信应用。
-- [CapsuleManagerSDK](https://github.com/asterinas/trustflow-capsule-manager-sdk): CapsuleManager的命令行工具和SDK。
+- [CapsuleManagerSDK](https://github.com/asterinas/trustflow-capsule-manager/tree/main/capsule-manager-sdk): CapsuleManager的命令行工具和SDK。
 
 ## 路线图
 

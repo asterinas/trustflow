@@ -14,26 +14,21 @@
 
 #pragma once
 
+#include "sgx_quote.h"
+
+#include "trustflow/attestation/generation/interface/generator.h"
+
 namespace trustflow {
 namespace attestation {
+namespace generation {
 
-constexpr char kReportVersion[] = "1.0";
-
-constexpr int kReportMaxSize = 40960;
-
-constexpr unsigned int kAttributeMaxSize = 40960;
-
-struct ReportType {
-  static constexpr char kReportTypeBgcheck[] = "BackgroundCheck";
-  static constexpr char kReportTypePassport[] = "Passport";
+class HyperenclaveAttestationGenerator : public AttestationGenerator {
+ public:
+  secretflowapis::v2::sdc::UnifiedAttestationReport GenerateReport(
+      const secretflowapis::v2::sdc::UnifiedAttestationGenerationParams&
+          gen_params) override;
 };
 
-struct Platform {
-  static constexpr char kPlatformSgxDcap[] = "SGX_DCAP";
-  static constexpr char kPlatformTdx[] = "TDX";
-  static constexpr char kPlatformCsv[] = "CSV";
-  static constexpr char kPlatformHyperEnclave[] = "HyperEnclave";
-};
-
+}  // namespace generation
 }  // namespace attestation
 }  // namespace trustflow

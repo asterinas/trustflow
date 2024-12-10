@@ -50,7 +50,7 @@ def _local_openssl_openssl():
         native.new_local_repository,
         name = "com_github_openssl_openssl",
         build_file = "@trustflow//bazel:openssl.BUILD",
-        path = "/",
+        path = "bazel",
     )
 
 def _com_github_grpc_grpc():

@@ -31,6 +31,11 @@ config_setting(
     values = {"define": "tee_type=tdx"},
 )
 
+config_setting(
+    name = "hyper",
+    values = {"define": "tee_type=hyper"},
+)
+
 trustflow_cc_library(
     name = "generator_wrapper",
     srcs = ["generator_wrapper.cc"],
@@ -39,12 +44,14 @@ trustflow_cc_library(
         ":sgx2": ["-DTEE_TYPE_SGX2"],
         ":tdx": ["-DTEE_TYPE_TDX"],
         ":csv": ["-DTEE_TYPE_CSV"],
+        ":hyper": ["-DTEE_TYPE_HYPER"],
         "//conditions:default": [],
     }),
     deps = select({
         ":sgx2": ["//trustflow/attestation/generation/sgx2:sgx2_generator"],
         ":tdx": ["//trustflow/attestation/generation/tdx:tdx_generator"],
         ":csv": ["//trustflow/attestation/generation/csv:csv_generator"],
+        ":hyper": ["//trustflow/attestation/generation/hyperenclave:hyperenclave_generator"],
         "//conditions:default": [],
     }) + [
         "//trustflow/attestation/common:constants",

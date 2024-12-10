@@ -24,7 +24,7 @@ TrustFlow is especially valuable in scenarios that involve secure storage, proce
 
 - [CapsuleManager](https://github.com/asterinas/trustflow-capsule-manager): authorization and key management module.
 - [TEEAPPs](https://github.com/asterinas/trustflow-teeapps): trusted applications.
-- [CapsuleManagerSDK](https://github.com/asterinas/trustflow-capsule-manager-sdk): the CLI tool and sdk for CapsuleManager.
+- [CapsuleManagerSDK](https://github.com/asterinas/trustflow-capsule-manager/tree/main/capsule-manager-sdk): the CLI tool and sdk for CapsuleManager.
 
 ## Roadmap
 
