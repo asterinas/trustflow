@@ -39,13 +39,16 @@ TrustFlow保护了数据使用中（data-in-use）、数据存储（data-at-rest
 -----
 从零开始，体验如何使用TrustFlow进行联合建模，欢迎阅读 `快速上手 <quick_start/index>`_ 。
 
+在CVM场景下使用Easy-Trustflow快速体验无痛的应用TEE化改造，欢迎阅读 `快速上手 <quick_start/easy_trustflow_examples>`_ 。
+
 架构和设计
 -----------
 了解TrustFlow架构、原理和更多功能，欢迎阅读 `架构设计 <architecture/index>`_ 。
 
 1. `TrustFlow核心原理 <architecture/principle>`_
-2. `授权策略 <architecture/policy>`_
-3. `可信应用 <architecture/apps/index>`_
+2. `Easy-TrustFlow架构 <architecture/easy_trustflow>`_
+3. `授权策略 <architecture/policy>`_
+4. `可信应用 <architecture/apps/index>`_
 
 自定义可信组件
 ---------------
@@ -55,12 +58,9 @@ TrustFlow保护了数据使用中（data-in-use）、数据存储（data-at-rest
 -----------
 关于TrustFlow的更多话题，欢迎阅读 `高阶话题 <advanced_topic/index>`_ 。
 
-1. `基于TrustFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee>`_
+1. `基于TrustFlow的跨域管控 <advanced_topic/cross_domain_controll_in_tee>`_。
+2.  TrustFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/roadmap>`_。
 
-
-路线图
------------
-TrustFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/roadmap>`_。
 
 获得帮助
 ------------
@@ -77,3 +77,4 @@ TrustFlow功能列表和路线图，欢迎阅读 `路线图 <./advanced_topic/ro
    architecture/index
    development/index
    advanced_topic/index
+   easy_trustflow/index

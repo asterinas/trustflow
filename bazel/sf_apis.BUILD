@@ -13,6 +13,7 @@
 # limitations under the License.
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_proto_grpc//cpp:defs.bzl", "cpp_grpc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -32,4 +33,26 @@ cc_proto_library(
     deps = [
         ":sf_apis_proto",
     ],
+)
+
+proto_library(
+    name = "sf_apis_no_proxy_proto",
+    srcs = glob(
+        [
+            "secretflowapis/v2/**/*.proto",
+        ],
+        exclude = [
+            "secretflowapis/v2/sdc/data_capsule_proxy/**",
+            "secretflowapis/v2/sdc/ra_proxy/**",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_google_protobuf//:any_proto",
+    ],
+)
+
+cpp_grpc_library(
+    name = "cc_sf_apis_no_proxy_grpc",
+    deps = [":sf_apis_no_proxy_proto"],
 )

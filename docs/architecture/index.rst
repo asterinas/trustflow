@@ -5,8 +5,9 @@
 
 .. toctree::
    :maxdepth: 3
-
+  
    principle
+   easy_trustflow
    policy
    data_lineage
    apps/index

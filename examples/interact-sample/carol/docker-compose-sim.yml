@@ -1,0 +1,94 @@
+services:
+  data-capsule-proxy:
+    image: secretflow/trustflow-data-capsule-proxy-sim-ubuntu22.04:0.1.0b0
+    volumes:
+      - type: bind
+        source: ./shared
+        target: /shared
+      - type: bind
+        source: ./data_capsule_proxy
+        target: /data_capsule_proxy
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    command: > 
+      /home/trustflow/proxy/data_capsule_proxy/main 
+      --cert-path /shared/deploy/carol.crt 
+      --private_key_path /shared/deploy/carol.key 
+      --cm_endpoint 172.31.11.1:8888
+      --cm_init_config /data_capsule_proxy/cm_init.yaml
+      --plat sim 
+      --port 50003
+      --log_path /shared/log/data-capsule-proxy.log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:50003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks: 
+      carol_network:
+        ipv4_address: 172.31.11.10
+  
+  trustflow-envoy:
+    image: secretflow/trustflow-envoy-ubuntu22.04:0.1.0b0
+    volumes:
+      - type: bind
+        source: ./envoy
+        target: /envoy
+      - type: bind
+        source: ./shared
+        target: /shared
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+    command: /home/trustflow_envoy/envoy -c /envoy/envoy.yml --log-path /shared/log/envoy.log
+    healthcheck:
+     test: ["CMD", "curl", "-f", "-X", "POST", "http://127.0.0.1:9901/healthcheck/ok"]
+     interval: 30s
+     timeout: 10s
+     retries: 3
+     start_period: 30s
+    networks:
+      carol_network:
+        ipv4_address: 172.31.11.11
+    ports:
+      - 40001:40001
+    depends_on:
+      - data-capsule-proxy
+  
+  carol-app:
+    image: secretflow/trustflow-release-ubuntu22.04:latest
+    volumes:
+      - type: bind
+        source: ./teeapp
+        target: /teeapp
+      - type: bind
+        source: ./shared
+        target: /shared
+    environment:
+      - TZ=Asia/Shanghai
+    command: >
+      bash -c "
+      export PATH=/root/miniconda3/bin:$PATH &&
+      pip install -r /teeapp/requirements.txt &&
+      python3 /teeapp/carol_app.py --port 8000
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-X", "POST", "http://127.0.0.1:8000/teeapp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      carol_network:
+        ipv4_address: 172.31.11.12
+    depends_on:
+      - trustflow-envoy
+
+networks:
+  carol_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.11.0/24

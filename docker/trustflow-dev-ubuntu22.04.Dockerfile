@@ -91,7 +91,7 @@ RUN echo "ca_directory=/etc/ssl/certs" >> /etc/wgetrc \
   && pushd /usr/lib/x86_64-linux-gnu/ && ln -s libdcap_quoteprov.so.1 libdcap_quoteprov.so && popd
 
 # install intel sgx sdk in ubuntu 22.04
-RUN wget https://download.01.org/intel-sgx/latest/linux-latest/distro/ubuntu22.04-server/sgx_linux_x64_sdk_2.23.100.2.bin \
+RUN wget https://download.01.org/intel-sgx/sgx-linux/2.23/distro/ubuntu22.04-server/sgx_linux_x64_sdk_2.23.100.2.bin \
   && chmod +x sgx_linux_x64_sdk_2.23.100.2.bin \
   && ./sgx_linux_x64_sdk_2.23.100.2.bin --prefix /opt/intel \
   && source /opt/intel/sgxsdk/environment \

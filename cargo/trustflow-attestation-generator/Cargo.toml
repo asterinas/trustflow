@@ -1,6 +1,6 @@
 [package]
 name = "trustflow-attestation-generator"
-version = "0.3.1-dev20240726"
+version = "0.3.1-dev20241104"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

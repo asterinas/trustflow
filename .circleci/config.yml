@@ -60,7 +60,7 @@ jobs:
             bazel --output_base=target build //trustflow/...
             bazel --output_base=target test //trustflow/...
             bazel --output_base=target test //trustflow/... --features=asan
-  docker_image_publish:
+  common_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1
     resource_class: 2xlarge+
@@ -200,6 +200,36 @@ jobs:
                 -r "${CIRCLE_PROJECT_REPONAME}" -c "${CIRCLE_SHA1}" "${VERSION}" \
                 build/trustflow/attestation/verification/trustflow_verifier.js
 
+  proxy_image_publish:
+    docker:
+      - image: cimg/deploy:2023.06.1
+    resource_class: 2xlarge+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build and Push Docker image
+          command: |
+            COMMON_VERSION=<< pipeline.parameters.GHA_Version >>
+            # login docker
+            docker login -u secretflow -p ${DOCKER_DEPLOY_TOKEN}
+            # login docker - aliyun
+            docker login -u ${ALIYUN_DOCKER_USERNAME} -p ${ALIYUN_DOCKER_PASSWORD} secretflow-registry.cn-hangzhou.cr.aliyuncs.com
+
+            echo "version: ${COMMON_VERSION}"
+            
+            pushd docker/proxy/data_capsule_proxy
+            bash build.sh -p sim -v ${COMMON_VERSION} -l -u
+            bash build.sh -p tdx -v ${COMMON_VERSION} -l -u
+            bash build.sh -p csv -v ${COMMON_VERSION} -l -u
+            popd
+
+            pushd docker/proxy/ra_proxy
+            bash build.sh -p sim -v ${COMMON_VERSION} -l -u
+            bash build.sh -p tdx -v ${COMMON_VERSION} -l -u
+            bash build.sh -p csv -v ${COMMON_VERSION} -l -u
+            popd
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -215,14 +245,14 @@ workflows:
         - exits: << pipeline.parameters.GHA_Version >>
     jobs:
       - wasm_verifier_publish
-  docker-image-publish-workflow:
+  common-image-publish-workflow:
     when:
       and:
-        - equal: ["docker_image_publish", << pipeline.parameters.GHA_Action >>]
+        - equal: ["common_image_publish", << pipeline.parameters.GHA_Action >>]
         - exits: << pipeline.parameters.GHA_Mode >>
         - exits: << pipeline.parameters.GHA_Version >>
     jobs:
-      - docker_image_publish
+      - common_image_publish
   pypi-publish-workflow:
     when:
       equal: ["pypi_publish", << pipeline.parameters.GHA_Action >>]
@@ -231,3 +261,10 @@ workflows:
           matrix:
             parameters:
               python_ver: ["3.10"]
+  proxy-image-publish-workflow:
+    when:
+      and:
+        - equal: ["proxy_image_publish", << pipeline.parameters.GHA_Action >>]
+        - exits: << pipeline.parameters.GHA_Version >>
+    jobs:
+      - proxy_image_publish
