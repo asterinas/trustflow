@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library", "trustflow_cc_test")
+load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
