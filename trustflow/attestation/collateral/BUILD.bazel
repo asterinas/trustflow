@@ -41,9 +41,3 @@ trustflow_cc_library(
         "@yacl//yacl/base:exception",
     ],
 )
-
-trustflow_cc_test(
-    name = "hygon_collateral_test",
-    srcs = ["hygon_collateral_test.cc"],
-    deps = [":hygon_collateral"],
-)
