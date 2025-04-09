@@ -3,7 +3,7 @@ include(FetchContent)
 FetchContent_Declare(
   apis_proto
   GIT_REPOSITORY https://github.com/secretflow/secure-data-capsule-apis.git
-  GIT_TAG 986ce7e6fed128a8ebedc0c02cc6abae01124716)
+  GIT_TAG bf3a19c4eddb0e2cf4c9c21c134413dffdf321c9)
 
 FetchContent_GetProperties(apis_proto)
 if(NOT apis_proto_POPULATED)
