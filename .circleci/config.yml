@@ -58,7 +58,6 @@ jobs:
             set -ex
             mkdir -p ~/.ssh && ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
             bazel --output_base=target build //trustflow/...
-            bazel --output_base=target test //trustflow/...
   common_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1

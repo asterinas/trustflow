@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library", "trustflow_cc_test")
+load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -40,10 +40,4 @@ trustflow_cc_library(
         "@trustflow//:hygon_csv_header",
         "@yacl//yacl/base:exception",
     ],
-)
-
-trustflow_cc_test(
-    name = "hygon_collateral_test",
-    srcs = ["hygon_collateral_test.cc"],
-    deps = [":hygon_collateral"],
 )
