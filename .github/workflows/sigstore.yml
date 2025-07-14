@@ -31,5 +31,5 @@ jobs:
         - name: Verify blob
           run: >
             cosign verify-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle
-            --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/cosign.yml@refs/heads/test/sigstore
+            --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com
