@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-bazel --output_base=target build //trustflow/proxy/... -c opt --repository_cache=/tmp/bazel_repo_cache --remote_download_minimal 
+bazel --output_base=target build //trustflow/... --define tee_type=tdx -c opt --repository_cache=/tmp/bazel_repo_cache --remote_download_minimal 

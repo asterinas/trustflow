@@ -21,6 +21,9 @@ DOCKER=docker
 project=trustflow
 if [[ $1 == 'enter' ]]; then
     $DOCKER exec -it ${project}-build-ubuntu-$(whoami) bash
+elif [[ $1 == 'exec' ]]; then
+    echo "$2"
+    $DOCKER exec ${project}-build-ubuntu-$(whoami) bash -c "$2"
 else
     $DOCKER run --name ${project}-build-ubuntu-$(whoami) -td \
         --network=host \

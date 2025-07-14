@@ -1,0 +1,36 @@
+name: install-cosign-and-use
+on: [push]
+jobs:
+  install-cosign-and-use:
+    runs-on: ubuntu-latest
+    # 'id-token' needs write permission to retrieve the OIDC token, which is required for authentication.
+    permissions:
+      id-token: write
+    steps:
+        # This step ensures that your project is available in the workflow environment.
+        - uses: actions/checkout@v4
+          with:
+            persist-credentials: false
+
+        - name: Run dev container
+          shell: bash
+          run: |
+            bash env.sh
+            bash env.sh exec "bazel --output_base=target build //trustflow/... --define tee_type=tdx -c opt --repository_cache=/tmp/bazel_repo_cache"
+            bash env.sh exec "chmod -R 777 target"
+            ./bazel-bin/trustflow/attestation/sample/generation/main
+        
+        - name: Install Cosign
+          uses: sigstore/cosign-installer@v3.7.0
+
+        - name: Check install!
+          run: cosign version
+
+        - name: Sign Blob
+          run: cosign sign-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle --yes
+
+        - name: Verify blob
+          run: >
+            cosign verify-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle
+            --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/cosign.yml@refs/heads/test/sigstore
+            --certificate-oidc-issuer=https://token.actions.githubusercontent.com
