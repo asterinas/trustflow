@@ -1,5 +1,6 @@
 name: install-cosign-and-use
-on: [push]
+on:
+  workflow_dispatch:
 jobs:
   install-cosign-and-use:
     runs-on: ubuntu-latest
@@ -19,6 +20,20 @@ jobs:
             bash env.sh exec "bazel --output_base=target build //trustflow/... --define tee_type=tdx -c opt --repository_cache=/tmp/bazel_repo_cache"
             bash env.sh exec "chmod -R 777 target"
         
+        - name: Set up QEMU
+          uses: docker/setup-qemu-action@v2.1.0
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2.5.0
+        
+        - name: Build docker image
+          shell: bash
+          run: |
+            pushd docker
+            docker build -f trustflow-release-ubuntu22.04.Dockerfile -t secretflow/trustflow-release-ubuntu22.04:latest .
+            docker images
+            popd
+
         - name: Install Cosign
           uses: sigstore/cosign-installer@v3.7.0
 
@@ -32,4 +47,11 @@ jobs:
           run: >
             cosign verify-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle
             --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore
+            --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+
+        - name: Sign and verify the images
+          run: |
+            cosign sign --yes secretflow/trustflow-release-ubuntu22.04:latest
+            cosign verify secretflow/trustflow-release-ubuntu22.04:latest \
+            --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com
