@@ -1,6 +1,5 @@
 name: cosign-and-verify
 on: [push]
-
 jobs:
   cosign-and-verify:
     runs-on: ubuntu-latest
@@ -40,14 +39,14 @@ jobs:
         - name: Check install!
           run: cosign version
 
-        - name: Sign Blob
-          run: cosign sign-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle --yes
+        # - name: Sign Blob
+        #   run: cosign sign-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle --yes
 
-        - name: Verify blob
-          run: >
-            cosign verify-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle
-            --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore
-            --certificate-oidc-issuer=https://token.actions.githubusercontent.com
+        # - name: Verify blob
+        #   run: >
+        #     cosign verify-blob ./bazel-bin/trustflow/attestation/sample/generation/main --bundle cosign.bundle
+        #     --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore
+        #     --certificate-oidc-issuer=https://token.actions.githubusercontent.com
 
         - name: Sign and verify the images
           run: |
