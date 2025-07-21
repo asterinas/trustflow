@@ -1,8 +1,8 @@
 name: cosign-and-verify
-on:
-  workflow_dispatch:
+on: [push]
+
 jobs:
-  install-cosign-and-use:
+  cosign-and-verify:
     runs-on: ubuntu-latest
     # 'id-token' needs write permission to retrieve the OIDC token, which is required for authentication.
     permissions:
@@ -13,12 +13,12 @@ jobs:
           with:
             persist-credentials: false
 
-        - name: Run dev container
-          shell: bash
-          run: |
-            bash env.sh
-            bash env.sh exec "bazel --output_base=target build //trustflow/... --define tee_type=tdx -c opt --repository_cache=/tmp/bazel_repo_cache"
-            bash env.sh exec "chmod -R 777 target"
+        # - name: Run dev container
+        #   shell: bash
+        #   run: |
+        #     bash env.sh
+        #     bash env.sh exec "bazel --output_base=target build //trustflow/... --define tee_type=tdx -c opt --repository_cache=/tmp/bazel_repo_cache"
+        #     bash env.sh exec "chmod -R 777 target"
         
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v2.1.0
