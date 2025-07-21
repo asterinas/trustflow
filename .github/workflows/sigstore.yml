@@ -1,4 +1,4 @@
-name: install-cosign-and-use
+name: cosign-and-verify
 on:
   workflow_dispatch:
 jobs:
