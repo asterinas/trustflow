@@ -29,7 +29,7 @@ jobs:
           shell: bash
           run: |
             pushd docker
-            docker build -f trustflow-release-ubuntu22.04.Dockerfile -t secretflow/trustflow-release-ubuntu22.04:latest .
+            docker build -f trustflow-release-ubuntu22.04.Dockerfile -t secretflow/trustflow-release-ubuntu22.04:0.6.0b0 .
             docker images
             popd
 
@@ -50,7 +50,7 @@ jobs:
 
         - name: Sign and verify the images
           run: |
-            cosign sign --yes secretflow/trustflow-release-ubuntu22.04:latest
-            cosign verify secretflow/trustflow-release-ubuntu22.04:latest \
+            cosign sign --yes secretflow/trustflow-release-ubuntu22.04:0.6.0b0
+            cosign verify secretflow/trustflow-release-ubuntu22.04:0.6.0b0 \
             --certificate-identity=https://github.com/asterinas/trustflow/.github/workflows/sigstore.yml@refs/heads/test/sigstore \
             --certificate-oidc-issuer=https://token.actions.githubusercontent.com
