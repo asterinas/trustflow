@@ -1,0 +1,63 @@
+admin:
+  address:
+    socket_address:
+      protocol: TCP
+      address: 127.0.0.1
+      port_value: 9901
+
+static_resources:
+  listeners:
+  - name: public_entry
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 50001 }
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: ingress_external_http
+          codec_type: AUTO
+          route_config:
+            name: teeapp_route
+            virtual_hosts:
+            - name: teeapp_virtual_host
+              domains: ["*"]
+              routes:
+              - match: { prefix: "/RaProxy" }
+                route: { cluster: ra_proxy_cluster }
+              - match: { prefix: "/teeapp" }
+                route: { cluster: teeapp_cluster }
+          http_filters:
+          - name: jwe
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.jwe.v1.JweConfig
+              cert_path: "/shared/deploy/carol.crt"
+              private_key_path: "/shared/deploy/carol.key"
+          - name: envoy.filters.http.router
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+  clusters:
+  - name: ra_proxy_cluster
+    connect_timeout: 0.25s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: ra_proxy_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address: { address: ra-proxy, port_value: 50002 }
+  - name: teeapp_cluster
+    connect_timeout: 0.25s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: teeapp_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address: { address: teeapp, port_value: 8000 }
+              
+

@@ -1,0 +1,4 @@
+click==8.1.7
+fastapi==0.115.5
+uvicorn==0.32.1
+requests==2.31.0

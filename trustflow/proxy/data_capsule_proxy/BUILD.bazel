@@ -1,0 +1,72 @@
+# Copyright 2024 Ant Group Co., Ltd.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@trustflow//bazel:trustflow.bzl", "trustflow_cc_binary", "trustflow_cc_library")
+
+package(default_visibility = ["//visibility:public"])
+
+trustflow_cc_library(
+    name = "oss_client",
+    srcs = ["oss_client.cc"],
+    hdrs = ["oss_client.h"],
+    deps = [
+        "@com_github_aliyun_oss_cpp_sdk//:oss_sdk",
+        "@yacl//yacl/base:exception",
+    ],
+)
+
+trustflow_cc_library(
+    name = "capsule_manager_client",
+    srcs = ["capsule_manager_client.cc"],
+    hdrs = ["capsule_manager_client.h"],
+    deps = [
+        "@com_github_grpc_grpc//:grpc++",
+        "@com_google_protobuf//:protobuf",
+        "@cppcodec",
+        "@sf_apis//:cc_sf_apis_no_proxy_grpc",
+        "@trustflow//trustflow/proxy/utils:crypto_util",
+        "@trustflow//trustflow/proxy/utils:ra_util",
+        "@yacl//yacl/base:exception",
+        "@yacl//yacl/crypto/rand",
+    ],
+)
+
+trustflow_cc_library(
+    name = "data_capsule_proxy",
+    srcs = ["data_capsule_proxy.cc"],
+    hdrs = ["data_capsule_proxy.h"],
+    deps = [
+        ":capsule_manager_client",
+        ":oss_client",
+        "@com_github_brpc_brpc//:brpc",
+        "@com_google_protobuf//:protobuf",
+        "@sf_apis//:cc_sf_apis_proto",
+        "@trustflow//trustflow/proxy/utils:crypto_util",
+        "@yacl//yacl/base:exception",
+        "@yacl//yacl/crypto/hash:hash_utils",
+    ],
+)
+
+trustflow_cc_binary(
+    name = "main",
+    srcs = ["main.cc"],
+    deps = [
+        ":capsule_manager_client",
+        ":data_capsule_proxy",
+        "@com_github_brpc_brpc//:brpc",
+        "@com_github_yaml_cpp//:yaml-cpp",
+        "@trustflow//trustflow/proxy/utils:io_util",
+        "@trustflow//trustflow/proxy/utils:log",
+    ],
+)

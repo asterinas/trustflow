@@ -1,6 +1,6 @@
 [package]
 name = "trustflow-attestation-rs"
-version = "0.3.1-dev20240726"
+version = "0.3.1-dev20241203"
 edition = "2021"
 description = "TrustFlow Attestation Rust Library"
 license = "Apache-2.0"
@@ -8,7 +8,7 @@ repository = "https://github.com/asterinas/trustflow.git"
 
 
 [dependencies]
-trustflow-attestation-sys = { version = "0.3.1-dev20240726"}
-sdc_apis = "0.2.1-dev20240222"
+trustflow-attestation-sys = { version = "0.3.1-dev20241104"}
+sdc_apis = "=0.3.0-dev20241104"
 serde_json = "1.0.114"
 

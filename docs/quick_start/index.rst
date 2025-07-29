@@ -17,3 +17,9 @@
    step4
    step5
 
+Easy-Trustflow典型场景示例
+--------------------------
+.. toctree::
+   :maxdepth: 2
+
+  easy_trustflow_examples

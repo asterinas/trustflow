@@ -25,6 +25,8 @@ def trustflow_dependencies():
     """
     _local_openssl_openssl()
 
+    _local_curl()
+
     _com_github_grpc_grpc()
 
     _com_github_rules_proto_grpc()
@@ -45,12 +47,24 @@ def trustflow_dependencies():
 
     _com_github_pybind11()
 
+    _aliyun_oss_cpp_sdk()
+
+    _com_github_yaml_cpp()
+
 def _local_openssl_openssl():
     maybe(
         native.new_local_repository,
         name = "com_github_openssl_openssl",
         build_file = "@trustflow//bazel:openssl.BUILD",
-        path = "/",
+        path = "bazel",
+    )
+
+def _local_curl():
+    maybe(
+        native.new_local_repository,
+        name = "com_github_curl",
+        build_file = "@trustflow//bazel:curl.BUILD",
+        path = "bazel",
     )
 
 def _com_github_grpc_grpc():
@@ -85,11 +99,11 @@ def _com_github_sf_apis():
         http_archive,
         name = "sf_apis",
         urls = [
-            "https://github.com/secretflow/secure-data-capsule-apis/archive/47a47f0f0096fdcc2c13c8ba3b86448d2795b829.tar.gz",
+            "https://github.com/secretflow/secure-data-capsule-apis/archive/bf3a19c4eddb0e2cf4c9c21c134413dffdf321c9.tar.gz",
         ],
-        strip_prefix = "secure-data-capsule-apis-47a47f0f0096fdcc2c13c8ba3b86448d2795b829",
+        strip_prefix = "secure-data-capsule-apis-bf3a19c4eddb0e2cf4c9c21c134413dffdf321c9",
         build_file = "@trustflow//bazel:sf_apis.BUILD",
-        sha256 = "c7b52eb51be3b4f1f380b8fb7cdd80a101e59e9471ca01d7b6c3441bd463dc3b",
+        sha256 = "99d7de35d410a7870d92e63d03c7c2d202bd5b3749e94cb6e0955dd6d62c06fa",
     )
 
 def _com_github_cppcodec():
@@ -102,6 +116,8 @@ def _com_github_cppcodec():
         ],
         strip_prefix = "cppcodec-0.2",
         sha256 = "0edaea2a9d9709d456aa99a1c3e17812ed130f9ef2b5c2d152c230a5cbc5c482",
+        patches = ["@trustflow//bazel:patches/cppcodec.patch"],
+        patch_args = ["-p1"],
     )
 
 def _com_github_yacl():
@@ -177,5 +193,30 @@ def _com_github_pybind11():
         strip_prefix = "pybind11-2.11.1",
         urls = [
             "https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz",
+        ],
+    )
+
+def _aliyun_oss_cpp_sdk():
+    maybe(
+        http_archive,
+        name = "com_github_aliyun_oss_cpp_sdk",
+        sha256 = "adee3beb0b7b88bfd947eb9dae5e0d22c8b3f315563aab076a7b60c140125f31",
+        strip_prefix = "aliyun-oss-cpp-sdk-1.9.0",
+        build_file = "//:bazel/oss_sdk.BUILD",
+        type = "tar.gz",
+        urls = [
+            "https://codeload.github.com/aliyun/aliyun-oss-cpp-sdk/tar.gz/1.9.0",
+        ],
+    )
+
+def _com_github_yaml_cpp():
+    maybe(
+        http_archive,
+        name = "com_github_yaml_cpp",
+        sha256 = "43e6a9fcb146ad871515f0d0873947e5d497a1c9c60c58cb102a97b47208b7c3",
+        strip_prefix = "yaml-cpp-yaml-cpp-0.7.0",
+        type = "tar.gz",
+        urls = [
+            "https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.tar.gz",
         ],
     )

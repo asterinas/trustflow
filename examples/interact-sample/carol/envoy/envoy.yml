@@ -1,0 +1,80 @@
+admin:
+  address:
+    socket_address:
+      protocol: TCP
+      address: 127.0.0.1
+      port_value: 9901
+
+static_resources:
+  listeners:
+  - name: mtls_ingress
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 40001 }
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.tcp_proxy
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
+          stat_prefix: tcp_proxy
+          cluster: carol_app_cluster
+      transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+          require_client_certificate: true
+          common_tls_context:
+            tls_certificates:
+              - certificate_chain:
+                  filename: /shared/deploy/tls.crt
+                private_key:
+                  filename: /shared/deploy/tls.key
+            validation_context:
+              trusted_ca:
+                filename: /shared/deploy/tls.crt
+  - name: mtls_egress
+    address:
+      socket_address: { address: 0.0.0.0, port_value: 41001 }
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.tcp_proxy
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
+          stat_prefix: tcp_proxy
+          cluster: bob_app_cluster
+  clusters:
+  - name: carol_app_cluster
+    connect_timeout: 0.25s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: carol_app_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address: { address: carol-app, port_value: 8000 }
+  - name: bob_app_cluster
+    connect_timeout: 0.25s
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: bob_app_cluster
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address: { address: 172.31.11.1, port_value: 30001 }
+    transport_socket:
+        name: envoy.transport_sockets.tls
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+          common_tls_context:
+            validation_context:
+                trusted_ca:
+                  filename: /shared/deploy/tls.crt
+            tls_certificates:
+            - certificate_chain:
+                filename: /shared/deploy/tls.crt
+              private_key:
+                filename: /shared/deploy/tls.key
+

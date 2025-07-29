@@ -23,4 +23,3 @@ cc_library(
         "//trustflow/attestation/verification/tdx:tdx_verifier",
     ],
 )
-

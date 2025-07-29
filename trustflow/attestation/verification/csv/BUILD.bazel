@@ -33,4 +33,3 @@ trustflow_cc_library(
         "@yacl//yacl/crypto/sign:sm2_signing",
     ],
 )
-
