@@ -46,7 +46,7 @@ jobs:
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: secretflow/trustflow-dev-ubuntu22.04:latest
-    resource_class: 2xlarge+
+    resource_class: large
     shell: /bin/bash --login -eo pipefail
     # Add steps to the job
     # See: https://circleci.com/docs/2.0/configuration-reference/#steps
@@ -61,7 +61,7 @@ jobs:
   common_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1
-    resource_class: 2xlarge+
+    resource_class: large
     steps:
       - checkout
       - setup_remote_docker
@@ -135,7 +135,7 @@ jobs:
   pypi_publish:
     docker:
       - image: secretflow/trustflow-dev-ubuntu22.04:latest
-    resource_class: 2xlarge+
+    resource_class: large
     parameters:
       python_ver:
         type: string
@@ -178,7 +178,7 @@ jobs:
   wasm_verifier_publish:
     docker:
       - image: secretflow/trustflow-dev-ubuntu22.04:latest
-    resource_class: 2xlarge+
+    resource_class: large
     steps:
       - checkout
       - run:
@@ -201,7 +201,7 @@ jobs:
   proxy_image_publish:
     docker:
       - image: cimg/deploy:2023.06.1
-    resource_class: 2xlarge+
+    resource_class: large
     steps:
       - checkout
       - setup_remote_docker
