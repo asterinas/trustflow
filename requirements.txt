@@ -1,2 +1,1 @@
-protobuf>=4.21.3,<5.0dev
 sdc-apis==0.3.0.dev20241202
