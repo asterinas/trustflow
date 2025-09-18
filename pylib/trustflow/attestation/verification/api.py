@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .api import report_verify
+from pylib.trustflow.attestation.common import AttestationPolicy, AttestationReport
+from . import verifier  # type: ignore
 
-__all__ = ["report_verify"]
+
+def report_verify(
+    report: AttestationReport, policy: AttestationPolicy
+) -> verifier.Status:
+    report_json = report.to_json()
+    policy_json = policy.to_json()
+    return verifier.attestation_report_verify(report_json, policy_json)

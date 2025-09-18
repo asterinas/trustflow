@@ -11,7 +11,24 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""TrustFlow attestation module providing common models and utilities."""
 
-from .api import report_verify
+from .common import (
+    AttestationGenerationParams,
+    AttestationReportParams,
+    AttestationReport,
+    AttestationAttribute,
+    AttestationPolicy,
+    AttestationNestedPolicies,
+    AttestationNestedPolicy,
+)
 
-__all__ = ["report_verify"]
+__all__ = [
+    "AttestationGenerationParams",
+    "AttestationReportParams",
+    "AttestationReport",
+    "AttestationAttribute",
+    "AttestationPolicy",
+    "AttestationNestedPolicies",
+    "AttestationNestedPolicy",
+]
