@@ -1,4 +1,4 @@
-# Copyright 2024 Ant Group Co., Ltd.
+# Copyright 2025 Ant Group Co., Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .api import report_verify
+from pylib.trustflow.attestation.common import (
+    AttestationGenerationParams,
+    AttestationReport,
+)
+from . import generator  # type: ignore
 
-__all__ = ["report_verify"]
+
+def generate_report(params: AttestationGenerationParams) -> AttestationReport:
+    attestation_generator = generator.create_attestation_generator()
+
+    params_json = params.to_json()
+    report_json = attestation_generator.generate_report(params_json)
+    report = AttestationReport.from_json(report_json)
+    return report

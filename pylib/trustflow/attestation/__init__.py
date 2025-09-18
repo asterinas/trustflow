@@ -12,6 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .api import report_verify
+"""TrustFlow attestation module providing common models and utilities."""
 
-__all__ = ["report_verify"]
+from .common import (
+    AttestationGenerationParams,
+    AttestationReportParams,
+    AttestationReport,
+    AttestationAttribute,
+    AttestationPolicy,
+    AttestationNestedPolicies,
+    AttestationNestedPolicy,
+)
+
+__all__ = [
+    "AttestationGenerationParams",
+    "AttestationReportParams", 
+    "AttestationReport",
+    "AttestationAttribute",
+    "AttestationPolicy",
+    "AttestationNestedPolicies",
+    "AttestationNestedPolicy",
+]

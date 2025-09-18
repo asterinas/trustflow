@@ -215,7 +215,10 @@ def build_generator():
         long_description=f"An attestation report generation library for {TEE_TYPE}",
         license="Apache 2.0",
         package_dir={"": "pylib"},
-        packages=["trustflow/attestation/generation"],
+        packages=[
+            "trustflow.attestation",
+            "trustflow.attestation.generation",
+        ],
         package_data={
             "": ["*.so"],
         },
@@ -244,16 +247,20 @@ def build_generator():
 
 def build_verifier():
     setuptools.setup(
-        name=f"trustflow-verification",
+        name="trustflow-verification",
         version=get_version(),
         author="secretflow",
         author_email="secretflow-contact@service.alipay.com",
         url="https://github.com/asterinas/trustflow",
-        description=f"An attestation report verification library",
+        description="An attestation report verification library",
         long_description_content_type="text/markdown",
         long_description="An attestation report verification library",
         license="Apache 2.0",
-        packages=["trustflow/attestation/verification"],
+        package_dir={"": "pylib"},
+        packages=[
+            "trustflow.attestation",
+            "trustflow.attestation.verification",
+        ],
         package_data={
             "": ["*.so"],
         },
