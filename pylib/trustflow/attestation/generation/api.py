@@ -23,6 +23,6 @@ def generate_report(params: AttestationGenerationParams) -> AttestationReport:
     attestation_generator = generator.create_attestation_generator()
 
     params_json = params.to_json()
-    report_json = attestation_generator.generate_report(params_json)
+    report_json = attestation_generator.generate_report_json(params_json)
     report = AttestationReport.from_json(report_json)
     return report
